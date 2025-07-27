@@ -22,19 +22,7 @@ def clean_vectorstore_directory(persist_directory):
     """Clean up vectorstore directory completely with better error handling"""
     if os.path.exists(persist_directory):
         try:
-            # Force close any open database connections
-            for root, dirs, files in os.walk(persist_directory):
-                for file in files:
-                    if file.endswith('.sqlite3') or file.endswith('.db'):
-                        db_path = os.path.join(root, file)
-                        try:
-                            # Try to close any open connections
-                            conn = sqlite3.connect(db_path)
-                            conn.close()
-                        except:
-                            pass
-            
-            # Wait a bit for connections to close
+            # Wait a bit for any processes to finish
             time.sleep(1)
             
             # Remove the directory
@@ -42,19 +30,10 @@ def clean_vectorstore_directory(persist_directory):
             print(f"🧹 Cleaned up directory: {persist_directory}")
         except Exception as e:
             print(f"⚠️ Error cleaning directory: {e}")
-            # If we can't remove it, try to remove just the db files
-            try:
-                for root, dirs, files in os.walk(persist_directory):
-                    for file in files:
-                        if file.endswith('.sqlite3') or file.endswith('.db'):
-                            os.remove(os.path.join(root, file))
-                print("🧹 Cleaned up database files")
-            except:
-                pass
     
     # Ensure directory exists
     os.makedirs(persist_directory, exist_ok=True)
-
+    
 def ingest_company_pdfs(company_name: str, persist_directory: str = None):
     pdf_folder = os.path.join("data/pdfs", company_name)
 
