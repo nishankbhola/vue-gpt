@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIBLIO - Insurance Broker Assistant</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            background: #ffffff;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 340px;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            padding: 0;
+            overflow-y: auto;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #ffffff;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .app-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.025em;
+        }
+
+        .app-subtitle {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .sidebar-content {
+            padding: 24px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .company-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 0 0 12px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .company-item:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .company-item.selected {
+            border-color: #6366f1;
+            background: #f8faff;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .company-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #64748b;
+        }
+
+        .company-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .company-name {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .company-stats {
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .status-ready {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-setup {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Admin Section */
+        .admin-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .admin-controls {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .admin-badge {
+            background: #dcfce7;
+            color: #166534;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .form-section {
+            margin-bottom: 24px;
+        }
+
+        .form-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .danger-zone {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            background: #f8fafc;
+            overflow-y: auto;
+        }
+
+        .main-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 32px 40px;
+        }
+
+        .main-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+            letter-spacing: -0.025em;
+        }
+
+        .main-subtitle {
+            font-size: 16px;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 40px;
+            display: flex;
+            gap: 0;
+        }
+
+        .tab-button {
+            padding: 16px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            color: #64748b;
+            position: relative;
+            transition: all 0.2s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-button:hover {
+            color: #0f172a;
+            background: #f8fafc;
+        }
+
+        .tab-button.active {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
+            background: #ffffff;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 40px;
+        }
+
+        .content-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-content {
+            padding: 32px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-control:disabled {
+            background: #f9fafb;
+            color: #9ca3af;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: #ffffff;
+            border-color: #6366f1;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #5855eb;
+            border-color: #5855eb;
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: #374151;
+            border-color: #d1d5db;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #059669;
+            border-color: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #dc2626;
+            border-color: #dc2626;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Question Interface */
+        .question-interface {
+            margin-bottom: 32px;
+        }
+
+        .question-input {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .question-input input {
+            flex: 1;
+        }
+
+        /* Response Styles */
+        .response-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .response-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .response-company {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 16px;
+        }
+
+        .response-model {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .response-content {
+            color: #374151;
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        .sources-section {
+            border-top: 1px solid #f1f5f9;
+            padding-top: 16px;
+        }
+
+        .sources-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .source-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .source-content {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px;
+            color: #64748b;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #e2e8f0;
+            border-top: 2px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .alert-warning {
+            background: #fffbeb;
+            border: 1px solid #fed7aa;
+            color: #92400e;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 64px 32px;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            color: #cbd5e1;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* Resource Grid */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .resource-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .resource-header {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .company-logo-large {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #64748b;
+        }
+
+        .resource-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .resource-info p {
+            font-size: 13px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .resource-body {
+            padding: 20px;
+        }
+
+        .pdf-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .pdf-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .pdf-name {
+            font-weight: 500;
+            color: #0f172a;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .pdf-size {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 0;
+            max-width: 480px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .modal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #64748b;
+            padding: 4px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: #e2e8f0;
+            color: #374151;
+        }
+
+        .modal-body {
+            padding: 32px;
+        }
+
+        .modal-footer {
+            padding: 24px 32px;
+            border-top: 1px solid #e2e8f0;
+            background: #f8fafc;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Toast Messages */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1001;
+            max-width: 400px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .toast-success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast-error {
+            border-left: 4px solid #ef4444;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 280px;
+            }
+            
+            .content-area {
+                padding: 24px;
+            }
+            
+            .main-header {
+                padding: 24px;
+            }
+            
+            .nav-tabs {
+                padding: 0 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 50vh;
+            }
+
+            .nav-tabs {
+                flex-wrap: wrap;
+                gap: 0;
+            }
+
+            .tab-button {
+                flex: 1;
+                min-width: 0;
+                text-align: center;
+            }
+
+            .question-input {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content-area {
+                padding: 16px;
+            }
+
+            .card-content {
+                padding: 20px;
+            }
+        }
+
+        /* Utility Classes */
+        .w-full { width: 100%; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 8px; }
+        .gap-3 { gap: 12px; }
+        .gap-4 { gap: 16px; }
+        .mb-4 { margin-bottom: 16px; }
+        .mb-6 { margin-bottom: 24px; }
+        .text-sm { font-size: 14px; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .text-gray-500 { color: #64748b; }
+        .text-gray-700 { color: #374151; }
+        .text-gray-900 { color: #0f172a; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="app-container">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <div class="logo-section">
+                        <div class="logo-icon">BI</div>
+                        <div>
+                            <div class="app-title">BIBLIO</div>
+                            <div class="app-subtitle">Insurance Assistant</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-content">
+                    <!-- Company Selection -->
+                    <div class="section-title">
+                        <i class="fas fa-building"></i>
+                        Companies
+                    </div>
+                    
+                    <div v-if="companies.length === 0" class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>BIBLIO is under maintenance</span>
+                    </div>
+                    
+                    <div v-for="company in companies" :key="company.name" 
+                         class="company-item" 
+                         :class="{ selected: selectedCompany === company.name }"
+                         @click="selectCompany(company.name)">
+                        <img v-if="company.has_logo" 
+                             :src="`http://localhost:5000/api/companies/${company.name}/logo`" 
+                             :alt="company.name" 
+                             class="company-logo">
+                        <div v-else class="company-logo">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="company-info">
+                            <div class="company-name">{{ company.name }}</div>
+                            <div class="company-stats">
+                                <span>{{ company.pdf_count }} PDFs</span>
+                                <span class="status-badge" :class="company.has_vectorstore ? 'status-ready' : 'status-setup'">
+                                    <i class="fas" :class="company.has_vectorstore ? 'fa-check' : 'fa-clock'"></i>
+                                    {{ company.has_vectorstore ? 'Ready' : 'Setup' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin Section -->
+                    <div class="admin-section">
+                        <div class="section-title">
+                            <i class="fas fa-cog"></i>
+                            Administration
+                        </div>
+                        
+                        <button class="btn btn-secondary w-full" @click="showAdminLogin = true" v-if="!isAdminAuthenticated">
+                            <i class="fas fa-lock"></i>
+                            Admin Access
+                        </button>
+                        
+                        <div v-if="isAdminAuthenticated" class="admin-controls">
+                            <div class="admin-badge">
+                                <i class="fas fa-shield-alt"></i>
+                                Admin Mode
+                            </div>
+                            
+                            <!-- Add New Company -->
+                            <div class="form-section">
+                                <div class="form-section-title">Add New Company</div>
+                                <div class="form-group">
+                                    <label class="form-label">Company Name</label>
+                                    <input v-model="newCompanyName" class="form-control" placeholder="Enter company name" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Company Logo</label>
+                                    <input type="file" @change="onLogoSelect" accept="image/*" class="form-control" />
+                                </div>
+                                <button class="btn btn-primary w-full" @click="addCompany" :disabled="!newCompanyName">
+                                    <i class="fas fa-plus"></i>
+                                    Add Company
+                                </button>
+                            </div>
+                            
+                            <!-- Company-specific admin controls -->
+                            <div v-if="selectedCompany">
+                                <div class="form-section">
+                                    <div class="form-section-title">Upload PDFs</div>
+                                    
+                                    <!-- Current PDFs -->
+                                    <div v-if="currentPdfs.length > 0" class="mb-4">
+                                        <div class="text-sm font-medium text-gray-700 mb-2">Current PDFs:</div>
+                                        <div class="text-sm text-gray-500">
+                                            <div v-for="pdf in currentPdfs" :key="pdf.name" class="mb-1">
+                                                • {{ pdf.name }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- File Upload -->
+                                    <div class="form-group">
+                                        <input type="file" @change="onPdfSelect" accept=".pdf" class="form-control" />
+                                    </div>
+                                    <button class="btn btn-primary w-full mb-4" @click="uploadPdf" :disabled="!selectedPdfFile">
+                                        <i class="fas fa-upload"></i>
+                                        Upload PDF
+                                    </button>
+                                    
+                                    <!-- Admin Actions -->
+                                    <button class="btn btn-success w-full" @click="relearnPdfs" :disabled="relearning">
+                                        <i class="fas" :class="relearning ? 'fa-spinner fa-spin' : 'fa-sync'"></i>
+                                        {{ relearning ? 'Processing...' : 'Relearn PDFs' }}
+                                    </button>
+                                </div>
+                                
+                                <!-- Danger Zone -->
+                                <div class="danger-zone">
+                                    <div class="form-section-title" style="color: #dc2626;">Danger Zone</div>
+                                    <button class="btn btn-danger w-full" @click="showDeleteConfirm = true">
+                                        <i class="fas fa-trash"></i>
+                                        Delete Company Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="main-header">
+                    <h1 class="main-title">BIBLIO</h1>
+                    <p class="main-subtitle">Advanced insurance broker assistant powered by AI</p>
+                </div>
+                
+                <!-- Navigation Tabs -->
+                <div class="nav-tabs">
+                    <button class="tab-button" 
+                            :class="{ active: currentView === 'general' }"
+                            @click="currentView = 'general'">
+                        <i class="fas fa-comments"></i>
+                        General Chat
+                    </button>
+                    <button class="tab-button" 
+                            :class="{ active: currentView === 'questions' }"
+                            @click="currentView = 'questions'">
+                        <i class="fas fa-search"></i>
+                        Ask Questions
+                    </button>
+                    <button class="tab-button" 
+                            :class="{ active: currentView === 'resources' }"
+                            @click="currentView = 'resources'">
+                        <i class="fas fa-folder-open"></i>
+                        Resources
+                    </button>
+                </div>
+                
+                <div class="content-area">
+                    <!-- General Chat View -->
+                    <div v-if="currentView === 'general'" class="content-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-comments"></i>
+                                General Chat
+                            </h2>
+                        </div>
+                        <div class="card-content">
+                            <p class="text-gray-600 mb-6">Ask questions across all companies to get comprehensive insights.</p>
+                            
+                            <div class="question-interface">
+                                <div class="question-input">
+                                    <input v-model="generalQuery" 
+                                           class="form-control" 
+                                           placeholder="Ask a general question across all companies..."
+                                           @keyup.enter="askAllCompanies" />
+                                    <button class="btn btn-primary" @click="askAllCompanies" :disabled="!generalQuery || loadingGeneral">
+                                        <i class="fas" :class="loadingGeneral ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+                                        {{ loadingGeneral ? 'Processing...' : 'Ask All' }}
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div v-if="loadingGeneral" class="loading">
+                                <div class="spinner"></div>
+                                Analyzing responses from all companies...
+                            </div>
+                            
+                            <div v-if="generalResponses.length > 0">
+                                <div v-for="response in generalResponses" :key="response.company" class="response-card">
+                                    <div class="response-header">
+                                        <img v-if="getCompanyLogo(response.company)" 
+                                             :src="getCompanyLogo(response.company)" 
+                                             :alt="response.company" 
+                                             style="width: 32px; height: 32px; border-radius: 8px;">
+                                        <div v-else style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-building" style="color: #64748b;"></i>
+                                        </div>
+                                        <div class="response-company">{{ response.company }}</div>
+                                        <div v-if="response.model_used" class="response-model">{{ response.model_used }}</div>
+                                    </div>
+                                    
+                                    <div v-if="response.success" class="response-content">
+                                        {{ response.answer }}
+                                    </div>
+                                    <div v-else class="alert alert-error">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <span>{{ response.error }}</span>
+                                    </div>
+                                    
+                                    <div v-if="response.sources && response.sources.length > 0" class="sources-section">
+                                        <div class="sources-title">Source Documents</div>
+                                        <div v-for="(source, index) in response.sources" :key="index" class="source-item">
+                                            <div class="source-content">{{ source.content }}</div>
+                                            <button class="btn btn-secondary btn-sm" 
+                                                    @click="downloadPdf(response.company, getFileName(source.source))">
+                                                <i class="fas fa-download"></i>
+                                                Download {{ getFileName(source.source) }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ask Questions View -->
+                    <div v-if="currentView === 'questions'" class="content-card">
+                        <div v-if="!selectedCompany" class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                            <div class="empty-state-title">Select a Company</div>
+                            <div class="empty-state-text">Choose a company from the sidebar to start asking questions.</div>
+                        </div>
+                        
+                        <div v-else>
+                            <div class="card-header">
+                                <div class="flex items-center gap-4">
+                                    <img v-if="getCompanyLogo(selectedCompany)" 
+                                         :src="getCompanyLogo(selectedCompany)" 
+                                         :alt="selectedCompany" 
+                                         style="width: 48px; height: 48px; border-radius: 12px;">
+                                    <div v-else style="width: 48px; height: 48px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-building" style="color: #64748b; font-size: 20px;"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="card-title" style="margin: 0;">{{ selectedCompany }}</h2>
+                                        <p style="color: #64748b; margin: 4px 0 0 0; font-size: 14px;">Ask specific questions about this company's policies and guidelines</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-content">
+                                <div v-if="!hasVectorstore" class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Upload PDFs for <strong>{{ selectedCompany }}</strong> and use admin access to click 'Relearn PDFs' to start.</span>
+                                </div>
+                                
+                                <div v-else class="question-interface">
+                                    <div class="question-input">
+                                        <input v-model="companyQuery" 
+                                               class="form-control" 
+                                               placeholder="Ask about underwriting guidelines, policies, or procedures..."
+                                               @keyup.enter="askCompanyQuestion" />
+                                        <button class="btn btn-primary" @click="askCompanyQuestion" :disabled="!companyQuery || loadingCompany">
+                                            <i class="fas" :class="loadingCompany ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+                                            {{ loadingCompany ? 'Processing...' : 'Ask' }}
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div v-if="loadingCompany" class="loading">
+                                    <div class="spinner"></div>
+                                    BIBLIO is analyzing your question...
+                                </div>
+                                
+                                <div v-if="companyResponse" class="response-card">
+                                    <div class="response-header">
+                                        <img v-if="getCompanyLogo(selectedCompany)" 
+                                             :src="getCompanyLogo(selectedCompany)" 
+                                             :alt="selectedCompany" 
+                                             style="width: 32px; height: 32px; border-radius: 8px;">
+                                        <div v-else style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-building" style="color: #64748b;"></i>
+                                        </div>
+                                        <div class="response-company">{{ selectedCompany }}</div>
+                                        <div v-if="companyResponse.model_used" class="response-model">{{ companyResponse.model_used }}</div>
+                                    </div>
+                                    
+                                    <div class="mb-4" style="padding: 12px; background: #f8fafc; border-radius: 8px; border-left: 3px solid #6366f1;">
+                                        <div class="font-medium text-gray-700 text-sm">Question:</div>
+                                        <div class="text-gray-900">{{ companyResponse.question }}</div>
+                                    </div>
+                                    
+                                    <div class="response-content">
+                                        {{ companyResponse.answer }}
+                                    </div>
+                                    
+                                    <div v-if="companyResponse.sources && companyResponse.sources.length > 0" class="sources-section">
+                                        <div class="sources-title">Source Documents</div>
+                                        <div v-for="(source, index) in companyResponse.sources" :key="index" class="source-item">
+                                            <div class="source-content">{{ source.content }}</div>
+                                            <button class="btn btn-secondary btn-sm" 
+                                                    @click="downloadPdf(selectedCompany, getFileName(source.source))">
+                                                <i class="fas fa-download"></i>
+                                                Download {{ getFileName(source.source) }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Resources View -->
+                    <div v-if="currentView === 'resources'" class="content-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-folder-open"></i>
+                                Resources Library
+                            </h2>
+                        </div>
+                        <div class="card-content">
+                            <div v-if="loadingResources" class="loading">
+                                <div class="spinner"></div>
+                                Loading resource library...
+                            </div>
+                            
+                            <div v-else>
+                                <!-- Summary Statistics -->
+                                <div v-if="resourcesSummary" class="stats-grid">
+                                    <div class="stat-card">
+                                        <div class="stat-number">{{ resourcesSummary.total_companies }}</div>
+                                        <div class="stat-label">Total Companies</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-number">{{ resourcesSummary.total_pdfs }}</div>
+                                        <div class="stat-label">Total Documents</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-number">{{ resourcesSummary.total_size_mb }}</div>
+                                        <div class="stat-label">Total Size (MB)</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Resource Grid -->
+                                <div class="resource-grid">
+                                    <div v-for="resource in allResources" :key="resource.company" class="resource-card">
+                                        <div class="resource-header">
+                                            <img v-if="resource.has_logo" 
+                                                 :src="`http://localhost:5000/api/companies/${resource.company}/logo`" 
+                                                 :alt="resource.company" 
+                                                 class="company-logo-large">
+                                            <div v-else class="company-logo-large">
+                                                <i class="fas fa-building"></i>
+                                            </div>
+                                            <div class="resource-info">
+                                                <h3>{{ resource.company }}</h3>
+                                                <p>{{ resource.pdfs.length }} document(s)</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="resource-body">
+                                            <div v-if="resource.pdfs.length === 0" class="alert alert-info">
+                                                <i class="fas fa-info-circle"></i>
+                                                <span>No documents found for {{ resource.company }}</span>
+                                            </div>
+                                            
+                                            <div v-else>
+                                                <div v-for="pdf in resource.pdfs" :key="pdf.name" class="pdf-item">
+                                                    <div class="pdf-info">
+                                                        <div class="pdf-name">{{ pdf.name }}</div>
+                                                        <div class="pdf-size">{{ pdf.size_mb }} MB</div>
+                                                    </div>
+                                                    <button class="btn btn-primary btn-sm" @click="downloadPdf(resource.company, pdf.name)">
+                                                        <i class="fas fa-download"></i>
+                                                        Download
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admin Login Modal -->
+        <div v-if="showAdminLogin" class="modal-overlay" @click="showAdminLogin = false">
+            <div class="modal" @click.stop>
+                <div class="modal-header">
+                    <h3 class="modal-title">Admin Authentication</h3>
+                    <button class="close-btn" @click="showAdminLogin = false">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Admin Password</label>
+                        <input v-model="adminPassword" type="password" class="form-control" 
+                               placeholder="Enter admin password" @keyup.enter="authenticateAdmin" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @click="showAdminLogin = false">Cancel</button>
+                    <button class="btn btn-primary" @click="authenticateAdmin" :disabled="!adminPassword">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Delete Confirmation Modal -->
+        <div v-if="showDeleteConfirm" class="modal-overlay" @click="showDeleteConfirm = false">
+            <div class="modal" @click.stop>
+                <div class="modal-header">
+                    <h3 class="modal-title">Confirm Deletion</h3>
+                    <button class="close-btn" @click="showDeleteConfirm = false">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <div class="font-semibold">This action cannot be undone</div>
+                            <div>Are you sure you want to delete <strong>{{ selectedCompany }}</strong> and all its data?</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @click="showDeleteConfirm = false">Cancel</button>
+                    <button class="btn btn-danger" @click="deleteCompany">
+                        <i class="fas fa-trash"></i>
+                        Delete Company
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Toast Messages -->
+        <div v-if="successMessage" class="toast toast-success">
+            <i class="fas fa-check-circle" style="color: #10b981;"></i>
+            <span>{{ successMessage }}</span>
+        </div>
+        
+        <div v-if="errorMessage" class="toast toast-error">
+            <i class="fas fa-exclamation-circle" style="color: #ef4444;"></i>
+            <span>{{ errorMessage }}</span>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    // State
+                    companies: [],
+                    selectedCompany: null,
+                    currentView: 'general',
+                    
+                    // Admin
+                    isAdminAuthenticated: false,
+                    showAdminLogin: false,
+                    adminPassword: '',
+                    newCompanyName: '',
+                    selectedLogoFile: null,
+                    
+                    // PDF Management
+                    currentPdfs: [],
+                    selectedPdfFile: null,
+                    relearning: false,
+                    
+                    // Questions
+                    generalQuery: '',
+                    companyQuery: '',
+                    generalResponses: [],
+                    companyResponse: null,
+                    loadingGeneral: false,
+                    loadingCompany: false,
+                    
+                    // Resources
+                    allResources: [],
+                    resourcesSummary: null,
+                    loadingResources: false,
+                    
+                    // Modals
+                    showDeleteConfirm: false,
+                    
+                    // Messages
+                    successMessage: '',
+                    errorMessage: '',
+                    
+                    // API Base URL
+                    apiUrl: 'http://localhost:5000/api'
+                }
+            },
+            
+            computed: {
+                hasVectorstore() {
+                    if (!this.selectedCompany) return false;
+                    const company = this.companies.find(c => c.name === this.selectedCompany);
+                    return company ? company.has_vectorstore : false;
+                }
+            },
+            
+            methods: {
+                // Utility Methods
+                showSuccess(message) {
+                    this.successMessage = message;
+                    setTimeout(() => {
+                        this.successMessage = '';
+                    }, 5000);
+                },
+                
+                showError(message) {
+                    this.errorMessage = message;
+                    setTimeout(() => {
+                        this.errorMessage = '';
+                    }, 8000);
+                },
+                
+                getCompanyLogo(companyName) {
+                    const company = this.companies.find(c => c.name === companyName);
+                    return company && company.has_logo ? `${this.apiUrl}/companies/${companyName}/logo` : null;
+                },
+                
+                getFileName(fullPath) {
+                    return fullPath.split('/').pop().split('\\').pop();
+                },
+                
+                // Company Management
+                async loadCompanies() {
+                    try {
+                        const response = await axios.get(`${this.apiUrl}/companies`);
+                        this.companies = response.data.companies;
+                    } catch (error) {
+                        this.showError('Failed to load companies');
+                        console.error('Error loading companies:', error);
+                    }
+                },
+                
+                selectCompany(companyName) {
+                    this.selectedCompany = companyName;
+                    this.companyResponse = null;
+                    this.companyQuery = '';
+                    this.loadCurrentPdfs();
+                },
+                
+                async addCompany() {
+                    if (!this.newCompanyName) {
+                        this.showError('Company name is required');
+                        return;
+                    }
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('company_name', this.newCompanyName);
+                        if (this.selectedLogoFile) {
+                            formData.append('logo', this.selectedLogoFile);
+                        }
+                        
+                        const response = await axios.post(`${this.apiUrl}/companies`, formData, {
+                            headers: { 'Content-Type': 'multipart/form-data' }
+                        });
+                        
+                        this.showSuccess(response.data.message);
+                        this.newCompanyName = '';
+                        this.selectedLogoFile = null;
+                        this.loadCompanies();
+                    } catch (error) {
+                        this.showError(error.response?.data?.error || 'Failed to add company');
+                    }
+                },
+                
+                async deleteCompany() {
+                    if (!this.selectedCompany) return;
+                    
+                    try {
+                        const response = await axios.delete(`${this.apiUrl}/companies/${this.selectedCompany}`);
+                        this.showSuccess(response.data.message);
+                        this.selectedCompany = null;
+                        this.showDeleteConfirm = false;
+                        this.loadCompanies();
+                    } catch (error) {
+                        this.showError(error.response?.data?.error || 'Failed to delete company');
+                    }
+                },
+                
+                // Admin Authentication
+                async authenticateAdmin() {
+                    if (!this.adminPassword) {
+                        this.showError('Password is required');
+                        return;
+                    }
+                    
+                    try {
+                        const response = await axios.post(`${this.apiUrl}/auth/admin`, {
+                            password: this.adminPassword
+                        });
+                        
+                        if (response.data.success) {
+                            this.isAdminAuthenticated = true;
+                            this.showAdminLogin = false;
+                            this.adminPassword = '';
+                            this.showSuccess('Admin access granted!');
+                        }
+                    } catch (error) {
+                        if (error.response?.status === 401) {
+                            this.showError('Invalid password');
+                        } else {
+                            this.showError('Authentication failed');
+                        }
+                    }
+                },
+                
+                // PDF Management
+                async loadCurrentPdfs() {
+                    if (!this.selectedCompany) return;
+                    
+                    try {
+                        const response = await axios.get(`${this.apiUrl}/companies/${this.selectedCompany}/pdfs`);
+                        this.currentPdfs = response.data.pdfs;
+                    } catch (error) {
+                        console.error('Error loading PDFs:', error);
+                    }
+                },
+                
+                onLogoSelect(event) {
+                    this.selectedLogoFile = event.target.files[0];
+                },
+                
+                onPdfSelect(event) {
+                    this.selectedPdfFile = event.target.files[0];
+                },
+                
+                async uploadPdf() {
+                    if (!this.selectedPdfFile || !this.selectedCompany) {
+                        this.showError('Please select a PDF file');
+                        return;
+                    }
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('pdf', this.selectedPdfFile);
+                        
+                        const response = await axios.post(`${this.apiUrl}/companies/${this.selectedCompany}/pdfs`, formData, {
+                            headers: { 'Content-Type': 'multipart/form-data' }
+                        });
+                        
+                        this.showSuccess(response.data.message);
+                        this.selectedPdfFile = null;
+                        this.loadCurrentPdfs();
+                        this.loadCompanies(); // Refresh company stats
+                    } catch (error) {
+                        this.showError(error.response?.data?.error || 'Failed to upload PDF');
+                    }
+                },
+                
+                async relearnPdfs() {
+                    if (!this.selectedCompany) return;
+                    
+                    this.relearning = true;
+                    try {
+                        const response = await axios.post(`${this.apiUrl}/companies/${this.selectedCompany}/relearn`);
+                        this.showSuccess(response.data.message);
+                        this.loadCompanies(); // Refresh company stats
+                    } catch (error) {
+                        this.showError(error.response?.data?.error || 'Failed to rebuild knowledge base');
+                    } finally {
+                        this.relearning = false;
+                    }
+                },
+                
+                async downloadPdf(companyName, pdfName) {
+                    try {
+                        const response = await axios.get(`${this.apiUrl}/companies/${companyName}/pdfs/${pdfName}`, {
+                            responseType: 'blob'
+                        });
+                        
+                        // Create download link
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', pdfName);
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+                        window.URL.revokeObjectURL(url);
+                    } catch (error) {
+                        this.showError('Failed to download PDF');
+                    }
+                },
+                
+                // Question Management
+                async askCompanyQuestion() {
+                    if (!this.companyQuery || !this.selectedCompany) return;
+                    
+                    this.loadingCompany = true;
+                    this.companyResponse = null;
+                    
+                    try {
+                        const response = await axios.post(`${this.apiUrl}/companies/${this.selectedCompany}/ask`, {
+                            question: this.companyQuery
+                        });
+                        
+                        this.companyResponse = response.data;
+                    } catch (error) {
+                        if (error.response?.status === 429) {
+                            this.showError('Rate limit reached. Please wait a moment and try again.');
+                        } else if (error.response?.status === 404) {
+                            this.showError('Knowledge base not found. Please upload PDFs and click Relearn.');
+                        } else {
+                            this.showError(error.response?.data?.error || 'Failed to get response');
+                        }
+                    } finally {
+                        this.loadingCompany = false;
+                    }
+                },
+                
+                async askAllCompanies() {
+                    if (!this.generalQuery) return;
+                    
+                    this.loadingGeneral = true;
+                    this.generalResponses = [];
+                    
+                    try {
+                        const response = await axios.post(`${this.apiUrl}/ask-all`, {
+                            question: this.generalQuery
+                        });
+                        
+                        this.generalResponses = response.data.responses;
+                    } catch (error) {
+                        this.showError(error.response?.data?.error || 'Failed to get responses');
+                    } finally {
+                        this.loadingGeneral = false;
+                    }
+                },
+                
+                // Resources
+                async loadResources() {
+                    this.loadingResources = true;
+                    
+                    try {
+                        const response = await axios.get(`${this.apiUrl}/resources`);
+                        this.allResources = response.data.resources;
+                        this.resourcesSummary = response.data.summary;
+                    } catch (error) {
+                        this.showError('Failed to load resources');
+                    } finally {
+                        this.loadingResources = false;
+                    }
+                }
+            },
+            
+            watch: {
+                currentView(newView) {
+                    if (newView === 'resources') {
+                        this.loadResources();
+                    }
+                }
+            },
+            
+            async mounted() {
+                await this.loadCompanies();
+                
+                // Load resources if starting on resources view
+                if (this.currentView === 'resources') {
+                    this.loadResources();
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
