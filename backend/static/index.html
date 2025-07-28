@@ -793,6 +793,29 @@
             border-left: 4px solid #ef4444;
         }
 
+        /* Server Status */
+        .server-status {
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .server-online {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .server-offline {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .sidebar {
@@ -890,15 +913,26 @@
                 </div>
                 
                 <div class="sidebar-content">
+                    <!-- Server Status -->
+                    <div class="server-status" :class="serverOnline ? 'server-online' : 'server-offline'">
+                        <i class="fas" :class="serverOnline ? 'fa-check-circle' : 'fa-times-circle'"></i>
+                        <span>{{ serverOnline ? 'Server Connected' : 'Server Offline - Start backend server' }}</span>
+                    </div>
+                    
                     <!-- Company Selection -->
                     <div class="section-title">
                         <i class="fas fa-building"></i>
                         Companies
                     </div>
                     
-                    <div v-if="companies.length === 0" class="alert alert-warning">
+                    <div v-if="!serverOnline" class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <span>Broker-gpt is under maintenance</span>
+                        <span>Start the Flask backend server to load companies</span>
+                    </div>
+                    
+                    <div v-else-if="companies.length === 0" class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>No companies yet. Use admin access to add companies.</span>
                     </div>
                     
                     <div v-for="company in companies" :key="company.name" 
@@ -906,7 +940,7 @@
                          :class="{ selected: selectedCompany === company.name }"
                          @click="selectCompany(company.name)">
                         <img v-if="company.has_logo" 
-                             :src="`http://localhost:5000/api/companies/${company.name}/logo`" 
+                             :src="`${apiUrl}/companies/${company.name}/logo`" 
                              :alt="company.name" 
                              class="company-logo">
                         <div v-else class="company-logo">
@@ -931,10 +965,15 @@
                             Administration
                         </div>
                         
-                        <button class="btn btn-secondary w-full" @click="showAdminLogin = true" v-if="!isAdminAuthenticated">
+                        <button class="btn btn-secondary w-full" @click="showAdminLogin = true" v-if="!isAdminAuthenticated && serverOnline">
                             <i class="fas fa-lock"></i>
                             Admin Access
                         </button>
+                        
+                        <div v-if="!serverOnline" class="alert alert-warning">
+                            <i class="fas fa-server"></i>
+                            <span>Admin access requires server connection</span>
+                        </div>
                         
                         <div v-if="isAdminAuthenticated" class="admin-controls">
                             <div class="admin-badge">
@@ -1034,8 +1073,24 @@
                 </div>
                 
                 <div class="content-area">
+                    <!-- Server Offline Message -->
+                    <div v-if="!serverOnline" class="content-card">
+                        <div class="card-content">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="fas fa-server"></i>
+                                </div>
+                                <div class="empty-state-title">Backend Server Required</div>
+                                <div class="empty-state-text">
+                                    Please start the Flask backend server to use Broker-gpt.<br><br>
+                                    Run: <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-family: monospace;">python backend/app.py</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- General Chat View -->
-                    <div v-if="currentView === 'general'" class="content-card">
+                    <div v-else-if="currentView === 'general'" class="content-card">
                         <div class="card-header">
                             <h2 class="card-title">
                                 <i class="fas fa-comments"></i>
@@ -1102,7 +1157,7 @@
                     </div>
                     
                     <!-- Ask Questions View -->
-                    <div v-if="currentView === 'questions'" class="content-card">
+                    <div v-else-if="currentView === 'questions'" class="content-card">
                         <div v-if="!selectedCompany" class="empty-state">
                             <div class="empty-state-icon">
                                 <i class="fas fa-arrow-left"></i>
@@ -1191,7 +1246,7 @@
                     </div>
                     
                     <!-- Resources View -->
-                    <div v-if="currentView === 'resources'" class="content-card">
+                    <div v-else-if="currentView === 'resources'" class="content-card">
                         <div class="card-header">
                             <h2 class="card-title">
                                 <i class="fas fa-folder-open"></i>
@@ -1226,7 +1281,7 @@
                                     <div v-for="resource in allResources" :key="resource.company" class="resource-card">
                                         <div class="resource-header">
                                             <img v-if="resource.has_logo" 
-                                                 :src="`http://localhost:5000/api/companies/${resource.company}/logo`" 
+                                                 :src="`${apiUrl}/companies/${resource.company}/logo`" 
                                                  :alt="resource.company" 
                                                  class="company-logo-large">
                                             <div v-else class="company-logo-large">
@@ -1342,6 +1397,7 @@
                     companies: [],
                     selectedCompany: null,
                     currentView: 'general',
+                    serverOnline: false,
                     
                     // Admin
                     isAdminAuthenticated: false,
@@ -1413,14 +1469,30 @@
                     return fullPath.split('/').pop().split('\\').pop();
                 },
                 
+                // Server Connection Check
+                async checkServerConnection() {
+                    try {
+                        const response = await axios.get(`${this.apiUrl}/../health`, { timeout: 3000 });
+                        this.serverOnline = response.status === 200;
+                        return this.serverOnline;
+                    } catch (error) {
+                        this.serverOnline = false;
+                        return false;
+                    }
+                },
+                
                 // Company Management
                 async loadCompanies() {
+                    if (!this.serverOnline) return;
+                    
                     try {
                         const response = await axios.get(`${this.apiUrl}/companies`);
-                        this.companies = response.data.companies;
+                        this.companies = response.data.companies || [];
                     } catch (error) {
-                        this.showError('Failed to load companies');
                         console.error('Error loading companies:', error);
+                        if (error.code === 'ERR_NETWORK' || error.code === 'ECONNREFUSED') {
+                            this.serverOnline = false;
+                        }
                     }
                 },
                 
@@ -1500,7 +1572,7 @@
                 
                 // PDF Management
                 async loadCurrentPdfs() {
-                    if (!this.selectedCompany) return;
+                    if (!this.selectedCompany || !this.serverOnline) return;
                     
                     try {
                         const response = await axios.get(`${this.apiUrl}/companies/${this.selectedCompany}/pdfs`);
@@ -1639,19 +1711,35 @@
             
             watch: {
                 currentView(newView) {
-                    if (newView === 'resources') {
+                    if (newView === 'resources' && this.serverOnline) {
                         this.loadResources();
                     }
                 }
             },
             
             async mounted() {
-                await this.loadCompanies();
+                // Check server connection first
+                await this.checkServerConnection();
                 
-                // Load resources if starting on resources view
-                if (this.currentView === 'resources') {
-                    this.loadResources();
+                if (this.serverOnline) {
+                    await this.loadCompanies();
+                    
+                    // Load resources if starting on resources view
+                    if (this.currentView === 'resources') {
+                        this.loadResources();
+                    }
                 }
+                
+                // Check server status periodically
+                setInterval(async () => {
+                    const wasOnline = this.serverOnline;
+                    await this.checkServerConnection();
+                    
+                    // If server came back online, reload companies
+                    if (!wasOnline && this.serverOnline) {
+                        this.loadCompanies();
+                    }
+                }, 10000); // Check every 10 seconds
             }
         }).mount('#app');
     </script>
