@@ -1472,9 +1472,9 @@
                 // Server Connection Check
                 async checkServerConnection() {
                     try {
-                        const response = await axios.get('http://localhost:5000/health', { timeout: 3000 });
-                        this.serverOnline = response.status === 200;
-                        return this.serverOnline;
+                        const response = await axios.get(`${this.apiUrl}/companies`, { timeout: 3000 });
+                        this.serverOnline = true;
+                        return true;
                     } catch (error) {
                         this.serverOnline = false;
                         return false;
