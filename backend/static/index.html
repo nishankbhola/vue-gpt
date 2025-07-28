@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIBLIO - Insurance Broker Assistant</title>
+    <title>Broker-gpt - Insurance Broker Assistant</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -883,7 +883,7 @@
                     <div class="logo-section">
                         <div class="logo-icon">BI</div>
                         <div>
-                            <div class="app-title">BIBLIO</div>
+                            <div class="app-title">Broker-gpt</div>
                             <div class="app-subtitle">Insurance Assistant</div>
                         </div>
                     </div>
@@ -898,7 +898,7 @@
                     
                     <div v-if="companies.length === 0" class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <span>BIBLIO is under maintenance</span>
+                        <span>Broker-gpt is under maintenance</span>
                     </div>
                     
                     <div v-for="company in companies" :key="company.name" 
@@ -1007,7 +1007,7 @@
             <!-- Main Content -->
             <div class="main-content">
                 <div class="main-header">
-                    <h1 class="main-title">BIBLIO</h1>
+                    <h1 class="main-title">Broker-gpt</h1>
                     <p class="main-subtitle">Advanced insurance broker assistant powered by AI</p>
                 </div>
                 
@@ -1149,7 +1149,7 @@
                                 
                                 <div v-if="loadingCompany" class="loading">
                                     <div class="spinner"></div>
-                                    BIBLIO is analyzing your question...
+                                    Broker-gpt is analyzing your question...
                                 </div>
                                 
                                 <div v-if="companyResponse" class="response-card">
