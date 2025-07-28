@@ -52,6 +52,7 @@ def get_embedding_function():
     return embedding_functions.SentenceTransformerEmbeddingFunction(
         model_name="all-MiniLM-L6-v2"
     )
+
 def is_streamlit_cloud():
     return os.environ.get("HOME") == "/home/adminuser"
 
@@ -145,12 +146,16 @@ def admin_auth():
     if password == ADMIN_PASSWORD:
         return jsonify({'success': True, 'message': 'Admin access granted'})
     else:
-        return jsonify({'success': True, 'message': 'Invalid'}), 401
+        return jsonify({'success': False, 'message': 'Invalid password'}), 401
 
 @app.route('/api/companies', methods=['GET'])
 def get_companies():
     """Get list of all companies"""
     try:
+        # Check if upload folder exists, if not create it
+        if not os.path.exists(UPLOAD_FOLDER):
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            
         company_folders = [f for f in os.listdir(UPLOAD_FOLDER) 
                           if os.path.isdir(os.path.join(UPLOAD_FOLDER, f))]
         
@@ -162,7 +167,10 @@ def get_companies():
             
             # Get PDF count
             company_pdf_dir = os.path.join(UPLOAD_FOLDER, company)
-            pdf_count = len([f for f in os.listdir(company_pdf_dir) if f.endswith(".pdf")])
+            try:
+                pdf_count = len([f for f in os.listdir(company_pdf_dir) if f.endswith(".pdf")])
+            except:
+                pdf_count = 0
             
             # Check if vectorstore exists
             VECTORSTORE_ROOT = "/mount/tmp/vectorstores" if is_streamlit_cloud() else "vectorstores"
@@ -178,7 +186,8 @@ def get_companies():
         
         return jsonify({'companies': companies})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        logger.error(f"Error getting companies: {str(e)}")
+        return jsonify({'companies': [], 'error': str(e)}), 200  # Return empty list instead of error
 
 @app.route('/api/companies', methods=['POST'])
 def add_company():
@@ -606,11 +615,21 @@ def get_all_resources():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-import os
+
 @app.route('/')
 def index():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'index.html')
 
+# Health check endpoint
+@app.route('/health')
+def health_check():
+    return jsonify({'status': 'ok', 'message': 'Server is running'})
+
 if __name__ == '__main__':
     debug_mode = os.getenv('FLASK_DEBUG', 'false').lower() == 'true'
-    app.run(host='0.0.0.0', debug=debug_mode)
+    print("🚀 Starting Broker-GPT Backend Server...")
+    print(f"📁 Upload folder: {UPLOAD_FOLDER}")
+    print(f"🖼️ Logos folder: {LOGOS_FOLDER}")
+    print(f"🔧 Debug mode: {debug_mode}")
+    print("🌐 Server will be available at: http://localhost:5000")
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
