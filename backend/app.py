@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__, static_folder='static', static_url_path='')
 CORS(app)
 
 # Configuration
@@ -619,12 +619,22 @@ def get_all_resources():
 
 @app.route('/')
 def index():
-    return send_from_directory('static', 'index.html')
+    return send_from_directory(app.static_folder, 'index.html')
 
 # Health check endpoint
 @app.route('/health')
 def health_check():
     return jsonify({'status': 'ok', 'message': 'Server is running'})
+
+
+@app.route('/<path:path>')
+def serve_static(path):
+    """Serve static files or return index.html for client-side routing"""
+    try:
+        return send_from_directory(app.static_folder, path)
+    except:
+        # Return index.html for client-side routing
+        return send_from_directory(app.static_folder, 'index.html')
 
 # Add at the very end of app.py, replace the existing if __name__ == '__main__':
 if __name__ == '__main__':
