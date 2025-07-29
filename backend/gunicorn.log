@@ -1,18 +1,38 @@
 nohup: ignoring input
-[2025-07-27 23:21:53 +0000] [14288] [INFO] Starting gunicorn 23.0.0
-[2025-07-27 23:21:53 +0000] [14288] [INFO] Listening at: http://127.0.0.1:5000 (14288)
-[2025-07-27 23:21:53 +0000] [14288] [INFO] Using worker: sync
-[2025-07-27 23:21:53 +0000] [14289] [INFO] Booting worker with pid: 14289
-[2025-07-27 23:21:53 +0000] [14290] [INFO] Booting worker with pid: 14290
-[2025-07-27 23:21:53 +0000] [14291] [INFO] Booting worker with pid: 14291
-[2025-07-27 23:21:53 +0000] [14292] [INFO] Booting worker with pid: 14292
-[2025-07-27 23:23:50 +0000] [14288] [INFO] Handling signal: hup
-[2025-07-27 23:23:50 +0000] [14288] [INFO] Hang up: Master
-[2025-07-27 23:23:50 +0000] [14288] [ERROR] Worker (pid:14290) was sent SIGHUP!
-[2025-07-27 23:23:50 +0000] [14288] [ERROR] Worker (pid:14292) was sent SIGHUP!
-[2025-07-27 23:23:50 +0000] [14288] [ERROR] Worker (pid:14291) was sent SIGHUP!
-[2025-07-27 23:23:50 +0000] [14298] [INFO] Booting worker with pid: 14298
-[2025-07-27 23:23:50 +0000] [14299] [INFO] Booting worker with pid: 14299
-[2025-07-27 23:23:50 +0000] [14300] [INFO] Booting worker with pid: 14300
-[2025-07-27 23:23:50 +0000] [14288] [ERROR] Worker (pid:14289) was sent SIGHUP!
-[2025-07-27 23:23:50 +0000] [14301] [INFO] Booting worker with pid: 14301
+[2025-07-28 03:00:17 +0000] [16035] [INFO] Starting gunicorn 23.0.0
+[2025-07-28 03:00:17 +0000] [16035] [INFO] Listening at: http://127.0.0.1:5000 (16035)
+[2025-07-28 03:00:17 +0000] [16035] [INFO] Using worker: sync
+[2025-07-28 03:00:17 +0000] [16036] [INFO] Booting worker with pid: 16036
+[2025-07-28 03:00:17 +0000] [16037] [INFO] Booting worker with pid: 16037
+[2025-07-28 03:00:17 +0000] [16039] [INFO] Booting worker with pid: 16039
+[2025-07-28 03:00:18 +0000] [16040] [INFO] Booting worker with pid: 16040
+[2025-07-28 03:02:16 +0000] [16039] [INFO] Worker exiting (pid: 16039)
+[2025-07-28 03:02:16 +0000] [16035] [INFO] Handling signal: term
+[2025-07-28 03:02:16 +0000] [16036] [INFO] Worker exiting (pid: 16036)
+[2025-07-28 03:02:16 +0000] [16040] [INFO] Worker exiting (pid: 16040)
+[2025-07-28 03:02:16 +0000] [16037] [INFO] Worker exiting (pid: 16037)
+[2025-07-28 03:02:16 +0000] [16035] [INFO] Shutting down: Master
+[2025-07-28 03:40:30 +0000] [16290] [INFO] Starting gunicorn 23.0.0
+[2025-07-28 03:40:30 +0000] [16290] [ERROR] Connection in use: ('127.0.0.1', 50000)
+[2025-07-28 03:40:30 +0000] [16290] [ERROR] connection to ('127.0.0.1', 50000) failed: [Errno 98] Address already in use
+[2025-07-28 03:40:31 +0000] [16290] [ERROR] Connection in use: ('127.0.0.1', 50000)
+[2025-07-28 03:40:31 +0000] [16290] [ERROR] connection to ('127.0.0.1', 50000) failed: [Errno 98] Address already in use
+[2025-07-28 03:40:32 +0000] [16290] [ERROR] Connection in use: ('127.0.0.1', 50000)
+[2025-07-28 03:40:32 +0000] [16290] [ERROR] connection to ('127.0.0.1', 50000) failed: [Errno 98] Address already in use
+[2025-07-28 03:40:33 +0000] [16290] [ERROR] Connection in use: ('127.0.0.1', 50000)
+[2025-07-28 03:40:33 +0000] [16290] [ERROR] connection to ('127.0.0.1', 50000) failed: [Errno 98] Address already in use
+[2025-07-28 03:40:34 +0000] [16290] [ERROR] Connection in use: ('127.0.0.1', 50000)
+[2025-07-28 03:40:34 +0000] [16290] [ERROR] connection to ('127.0.0.1', 50000) failed: [Errno 98] Address already in use
+[2025-07-28 03:40:35 +0000] [16290] [ERROR] Can't connect to ('127.0.0.1', 50000)
+[2025-07-28 03:42:36 +0000] [16337] [INFO] Starting gunicorn 23.0.0
+[2025-07-28 03:42:36 +0000] [16337] [ERROR] Connection in use: ('127.0.0.1', 50000)
+[2025-07-28 03:42:36 +0000] [16337] [ERROR] connection to ('127.0.0.1', 50000) failed: [Errno 98] Address already in use
+[2025-07-28 03:42:37 +0000] [16337] [ERROR] Connection in use: ('127.0.0.1', 50000)
+[2025-07-28 03:42:37 +0000] [16337] [ERROR] connection to ('127.0.0.1', 50000) failed: [Errno 98] Address already in use
+[2025-07-28 03:42:38 +0000] [16337] [ERROR] Connection in use: ('127.0.0.1', 50000)
+[2025-07-28 03:42:38 +0000] [16337] [ERROR] connection to ('127.0.0.1', 50000) failed: [Errno 98] Address already in use
+[2025-07-28 03:42:39 +0000] [16337] [ERROR] Connection in use: ('127.0.0.1', 50000)
+[2025-07-28 03:42:39 +0000] [16337] [ERROR] connection to ('127.0.0.1', 50000) failed: [Errno 98] Address already in use
+[2025-07-28 03:42:40 +0000] [16337] [ERROR] Connection in use: ('127.0.0.1', 50000)
+[2025-07-28 03:42:40 +0000] [16337] [ERROR] connection to ('127.0.0.1', 50000) failed: [Errno 98] Address already in use
+[2025-07-28 03:42:41 +0000] [16337] [ERROR] Can't connect to ('127.0.0.1', 50000)
