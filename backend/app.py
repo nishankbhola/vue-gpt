@@ -12,6 +12,7 @@ from chromadb.utils import embedding_functions
 import logging
 from functools import lru_cache
 from flask import Flask, send_from_directory
+from flask import Flask, request, jsonify, send_file, send_from_directory
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -618,18 +619,20 @@ def get_all_resources():
 
 @app.route('/')
 def index():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'index.html')
+    return send_from_directory('static', 'index.html')
 
 # Health check endpoint
 @app.route('/health')
 def health_check():
     return jsonify({'status': 'ok', 'message': 'Server is running'})
 
+# Add at the very end of app.py, replace the existing if __name__ == '__main__':
 if __name__ == '__main__':
-    debug_mode = os.getenv('FLASK_DEBUG', 'false').lower() == 'true'
+    # For production, don't run debug mode
+    debug_mode = False
     print("🚀 Starting Broker-GPT Backend Server...")
     print(f"📁 Upload folder: {UPLOAD_FOLDER}")
     print(f"🖼️ Logos folder: {LOGOS_FOLDER}")
     print(f"🔧 Debug mode: {debug_mode}")
-    print("🌐 Server will be available at: http://localhost:5000")
+    print("🌐 Server will be available at: http://0.0.0.0:5000")
     app.run(host='0.0.0.0', port=5000, debug=debug_mode)

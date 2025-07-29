@@ -1,0 +1,11 @@
+venv/
+node_modules/
+__pycache__/
+*.log
+*.sqlite
+*.pdf
+*.zip
+*.tar.gz
+*.gz
+dist/
+build/
