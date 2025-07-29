@@ -914,7 +914,7 @@
                 
                 <div class="sidebar-content">
                     <!-- Server Status -->
-                    <div class="server-status" :class="serverOnline ? 'server-online' : 'server-offline'">
+                    <div class="server-status" :class="{ 'server-online': serverOnline, 'server-offline': !serverOnline }">
                         <i class="fas" :class="serverOnline ? 'fa-check-circle' : 'fa-times-circle'"></i>
                         <span>{{ serverOnline ? 'Server Connected' : 'Server Offline - Start backend server' }}</span>
                     </div>
