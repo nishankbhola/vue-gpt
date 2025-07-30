@@ -217,31 +217,91 @@ def add_company():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/companies/<company_name>', methods=['DELETE'])
+@app.route('/api/companies/<company_name>', methods=['DELETE'])
 def delete_company(company_name):
     """Delete a company and all its data"""
+    import stat
+    import time
+    
+    def remove_readonly(func, path, _):
+        """Error handler for removing read-only files on Windows"""
+        try:
+            os.chmod(path, stat.S_IWRITE)
+            func(path)
+        except Exception as e:
+            logger.warning(f"Could not remove {path}: {e}")
+    
+    def safe_remove_tree(path, max_retries=3):
+        """Safely remove directory tree with retries"""
+        for attempt in range(max_retries):
+            try:
+                if os.path.exists(path):
+                    # First try normal removal
+                    shutil.rmtree(path)
+                    return True
+            except PermissionError:
+                try:
+                    # Try with error handler for read-only files
+                    shutil.rmtree(path, onerror=remove_readonly)
+                    return True
+                except Exception as e:
+                    if attempt < max_retries - 1:
+                        logger.warning(f"Attempt {attempt + 1} failed to remove {path}: {e}. Retrying...")
+                        time.sleep(1)  # Wait 1 second before retry
+                    else:
+                        logger.error(f"Failed to remove {path} after {max_retries} attempts: {e}")
+                        return False
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    logger.warning(f"Attempt {attempt + 1} failed to remove {path}: {e}. Retrying...")
+                    time.sleep(1)
+                else:
+                    logger.error(f"Failed to remove {path} after {max_retries} attempts: {e}")
+                    return False
+        return False
+    
     try:
-        # Clear vectorstore cache
+        # Clear vectorstore cache first
         clear_company_vectorstore_cache(company_name)
+        
+        errors = []
         
         # Delete PDFs
         company_path = os.path.join(UPLOAD_FOLDER, company_name)
         if os.path.exists(company_path):
-            shutil.rmtree(company_path)
+            if not safe_remove_tree(company_path):
+                errors.append(f"Could not fully remove PDF directory: {company_path}")
         
         # Delete vectorstore
         VECTORSTORE_ROOT = "/mount/tmp/vectorstores" if is_streamlit_cloud() else "vectorstores"
         vectorstore_path = os.path.join(VECTORSTORE_ROOT, company_name)
         if os.path.exists(vectorstore_path):
-            shutil.rmtree(vectorstore_path)
+            if not safe_remove_tree(vectorstore_path):
+                errors.append(f"Could not fully remove vectorstore: {vectorstore_path}")
         
         # Delete logo
         logo_path = os.path.join(LOGOS_FOLDER, f"{company_name}.png")
         if os.path.exists(logo_path):
-            os.remove(logo_path)
+            try:
+                os.chmod(logo_path, stat.S_IWRITE)  # Remove read-only if needed
+                os.remove(logo_path)
+            except Exception as e:
+                errors.append(f"Could not remove logo: {e}")
         
-        return jsonify({'success': True, 'message': f'Deleted all data for {company_name}'})
+        if errors:
+            # Some files couldn't be deleted, but we'll return partial success
+            error_message = "Company deleted with some issues: " + "; ".join(errors)
+            return jsonify({
+                'success': True, 
+                'message': f'Deleted {company_name}', 
+                'warnings': errors
+            }), 200
+        else:
+            return jsonify({'success': True, 'message': f'Deleted all data for {company_name}'})
+            
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        logger.error(f"Error deleting company {company_name}: {e}")
+        return jsonify({'error': f'Error deleting company: {str(e)}'}), 500
 
 @app.route('/api/companies/<company_name>/logo', methods=['GET'])
 def get_company_logo(company_name):
