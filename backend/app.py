@@ -476,7 +476,7 @@ def download_pdf(company_name, pdf_name):
 
 @app.route('/api/companies/<company_name>/relearn', methods=['POST'])
 def relearn_pdfs(company_name):
-    """Rebuild knowledge base for company"""
+    """Rebuild knowledge base for company - Updated for ChromaDB 1.0.15"""
     try:
         from ingest import ingest_company_pdfs
         
@@ -486,43 +486,33 @@ def relearn_pdfs(company_name):
         # Clear the cached vectorstore
         clear_company_vectorstore_cache(company_name)
         
-        # Remove existing vectorstore
-        if os.path.exists(vectorstore_path):
-            try:
-                shutil.rmtree(vectorstore_path, ignore_errors=True)
-                time.sleep(2)
-            except Exception as cleanup_error:
-                logger.warning(f"Cleanup warning: {cleanup_error}")
+        # Ensure base vectorstore directory exists
+        os.makedirs(VECTORSTORE_ROOT, exist_ok=True)
         
-        os.makedirs(vectorstore_path, exist_ok=True)
-        
-        # Set proper ownership for the vectorstore directory
-        set_www_data_ownership(vectorstore_path)
-        
-        # Run the ingestion
-        vectordb = ingest_company_pdfs(company_name, persist_directory=vectorstore_path)
-        
-        # Ensure all created files have proper ownership
+        # Run the ingestion with better error handling
         try:
-            for root, dirs, files in os.walk(vectorstore_path):
-                for file in files:
-                    file_path = os.path.join(root, file)
-                    set_www_data_ownership(file_path)
-                for dir in dirs:
-                    dir_path = os.path.join(root, dir)
-                    set_www_data_ownership(dir_path)
-        except Exception as e:
-            logger.warning(f"Could not set ownership for all vectorstore files: {e}")
+            vectordb = ingest_company_pdfs(company_name, persist_directory=vectorstore_path)
+            return jsonify({'success': True, 'message': 'Knowledge base updated successfully!'})
+        except ValueError as ve:
+            # Handle specific PDF/document errors
+            return jsonify({'error': f'Document processing error: {str(ve)}'}), 400
+        except Exception as ce:
+            # Handle ChromaDB specific errors
+            clear_company_vectorstore_cache(company_name)
+            if "already exists" in str(ce).lower():
+                return jsonify({'error': 'Collection already exists. Please try again.'}), 500
+            elif "tenant" in str(ce).lower():
+                return jsonify({'error': 'Database connection error. Please restart the server and try again.'}), 500
+            else:
+                return jsonify({'error': f'Vector database error: {str(ce)}'}), 500
         
-        return jsonify({'success': True, 'message': 'Knowledge base updated successfully!'})
-        
+    except ImportError as ie:
+        return jsonify({'error': f'Import error: {str(ie)}'}), 500
     except Exception as e:
         clear_company_vectorstore_cache(company_name)
-        error_msg = str(e)
-        if "no such table: tenants" in error_msg:
-            return jsonify({'error': 'Database corruption detected. Please try again.'}), 500
-        else:
-            return jsonify({'error': f'Error: {error_msg}'}), 500
+        logger.error(f"Unexpected error in relearn_pdfs: {str(e)}")
+        return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
+        
             
 @app.route('/api/companies/<company_name>/ask', methods=['POST'])
 def ask_company_question(company_name):
