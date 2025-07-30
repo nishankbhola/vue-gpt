@@ -5,7 +5,9 @@ from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import chromadb
 from chromadb.utils import embedding_functions
-
+import pwd
+import grp
+import subprocess
 
 
 # --- NEW: Cached function to load the embedding model ---
@@ -14,6 +16,33 @@ from chromadb.utils import embedding_functions
 #     """Loads the sentence transformer model only once."""
 #     return SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 
+
+
+# Add this function to ingest.py
+def set_www_data_ownership(file_or_dir_path):
+    """Set ownership to www-data:www-data for created files/directories"""
+    try:
+        www_data_user = pwd.getpwnam('www-data')
+        www_data_group = grp.getgrnam('www-data')
+        os.chown(file_or_dir_path, www_data_user.pw_uid, www_data_group.gr_gid)
+        
+        if os.path.isdir(file_or_dir_path):
+            os.chmod(file_or_dir_path, 0o755)
+        else:
+            os.chmod(file_or_dir_path, 0o644)
+        return True
+    except Exception:
+        try:
+            if os.path.isdir(file_or_dir_path):
+                subprocess.run(['sudo', 'chown', '-R', 'www-data:www-data', file_or_dir_path], check=True, capture_output=True)
+                subprocess.run(['sudo', 'chmod', '-R', '755', file_or_dir_path], check=True, capture_output=True)
+            else:
+                subprocess.run(['sudo', 'chown', 'www-data:www-data', file_or_dir_path], check=True, capture_output=True)
+                subprocess.run(['sudo', 'chmod', '644', file_or_dir_path], check=True, capture_output=True)
+            return True
+        except Exception:
+            return False
+            
 # Helper to detect cloud
 def is_streamlit_cloud():
     return os.environ.get("HOME") == "/home/adminuser"
