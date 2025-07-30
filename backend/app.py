@@ -13,6 +13,9 @@ import logging
 from functools import lru_cache
 from flask import Flask, send_from_directory
 from flask import Flask, request, jsonify, send_file, send_from_directory
+import subprocess
+import pwd
+import grp
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -60,14 +63,18 @@ def is_streamlit_cloud():
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Also update the ingest function to set proper ownership
 def create_chroma_vectorstore(vectorstore_path, company_name, max_retries=5):
-    """Create ChromaDB client with enhanced retry logic"""
+    """Create ChromaDB client with enhanced retry logic and proper ownership"""
     for attempt in range(max_retries):
         try:
             if company_name in vectorstore_cache:
                 del vectorstore_cache[company_name]
             
             os.makedirs(vectorstore_path, exist_ok=True)
+            
+            # Set proper ownership for vectorstore directory
+            set_www_data_ownership(vectorstore_path)
             
             client = chromadb.PersistentClient(path=vectorstore_path)
             embedding_function = get_embedding_function()
@@ -77,6 +84,18 @@ def create_chroma_vectorstore(vectorstore_path, company_name, max_retries=5):
                 name=f"{company_name}_docs",
                 embedding_function=embedding_function
             )
+            
+            # Set ownership for any files created by ChromaDB
+            try:
+                for root, dirs, files in os.walk(vectorstore_path):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        set_www_data_ownership(file_path)
+                    for dir in dirs:
+                        dir_path = os.path.join(root, dir)
+                        set_www_data_ownership(dir_path)
+            except Exception as e:
+                logger.warning(f"Could not set ownership for all vectorstore files: {e}")
             
             return client, collection
             
@@ -190,6 +209,45 @@ def get_companies():
         logger.error(f"Error getting companies: {str(e)}")
         return jsonify({'companies': [], 'error': str(e)}), 200  # Return empty list instead of error
 
+def set_www_data_ownership(file_or_dir_path):
+    """Set ownership to www-data:www-data for uploaded files/directories"""
+    try:
+        # Get www-data user and group IDs
+        www_data_user = pwd.getpwnam('www-data')
+        www_data_group = grp.getgrnam('www-data')
+        
+        # Change ownership
+        os.chown(file_or_dir_path, www_data_user.pw_uid, www_data_group.gr_gid)
+        
+        # Set appropriate permissions
+        if os.path.isdir(file_or_dir_path):
+            os.chmod(file_or_dir_path, 0o755)  # rwxr-xr-x for directories
+        else:
+            os.chmod(file_or_dir_path, 0o644)  # rw-r--r-- for files
+        
+        logger.info(f"Set www-data ownership for: {file_or_dir_path}")
+        return True
+        
+    except Exception as e:
+        logger.warning(f"Could not set www-data ownership for {file_or_dir_path}: {e}")
+        # Try with sudo as fallback
+        try:
+            if os.path.isdir(file_or_dir_path):
+                subprocess.run(['sudo', 'chown', '-R', 'www-data:www-data', file_or_dir_path], 
+                             check=True, capture_output=True)
+                subprocess.run(['sudo', 'chmod', '-R', '755', file_or_dir_path], 
+                             check=True, capture_output=True)
+            else:
+                subprocess.run(['sudo', 'chown', 'www-data:www-data', file_or_dir_path], 
+                             check=True, capture_output=True)
+                subprocess.run(['sudo', 'chmod', '644', file_or_dir_path], 
+                             check=True, capture_output=True)
+            logger.info(f"Set www-data ownership with sudo for: {file_or_dir_path}")
+            return True
+        except Exception as sudo_error:
+            logger.error(f"Failed to set ownership even with sudo: {sudo_error}")
+            return False
+
 @app.route('/api/companies', methods=['POST'])
 def add_company():
     """Add a new company"""
@@ -205,12 +263,18 @@ def add_company():
         
         os.makedirs(company_path)
         
+        # Set proper ownership for the new directory
+        set_www_data_ownership(company_path)
+        
         # Handle logo upload
         if 'logo' in request.files:
             logo_file = request.files['logo']
             if logo_file.filename != '':
                 logo_path = os.path.join(LOGOS_FOLDER, f"{company_name}.png")
                 logo_file.save(logo_path)
+                
+                # Set proper ownership for the logo file
+                set_www_data_ownership(logo_path)
         
         return jsonify({'success': True, 'message': f'Added company: {company_name}'})
     except Exception as e:
@@ -357,9 +421,17 @@ def upload_pdf(company_name):
         save_path = os.path.join(UPLOAD_FOLDER, company_name, filename)
         
         # Create directory if it doesn't exist
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        company_dir = os.path.dirname(save_path)
+        if not os.path.exists(company_dir):
+            os.makedirs(company_dir, exist_ok=True)
+            # Set proper ownership for the directory
+            set_www_data_ownership(company_dir)
         
+        # Save the PDF file
         pdf_file.save(save_path)
+        
+        # Set proper ownership for the uploaded PDF
+        set_www_data_ownership(save_path)
         
         return jsonify({'success': True, 'message': f'Uploaded: {filename}'})
     except Exception as e:
@@ -398,8 +470,23 @@ def relearn_pdfs(company_name):
         
         os.makedirs(vectorstore_path, exist_ok=True)
         
+        # Set proper ownership for the vectorstore directory
+        set_www_data_ownership(vectorstore_path)
+        
         # Run the ingestion
         vectordb = ingest_company_pdfs(company_name, persist_directory=vectorstore_path)
+        
+        # Ensure all created files have proper ownership
+        try:
+            for root, dirs, files in os.walk(vectorstore_path):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    set_www_data_ownership(file_path)
+                for dir in dirs:
+                    dir_path = os.path.join(root, dir)
+                    set_www_data_ownership(dir_path)
+        except Exception as e:
+            logger.warning(f"Could not set ownership for all vectorstore files: {e}")
         
         return jsonify({'success': True, 'message': 'Knowledge base updated successfully!'})
         
@@ -410,7 +497,7 @@ def relearn_pdfs(company_name):
             return jsonify({'error': 'Database corruption detected. Please try again.'}), 500
         else:
             return jsonify({'error': f'Error: {error_msg}'}), 500
-
+            
 @app.route('/api/companies/<company_name>/ask', methods=['POST'])
 def ask_company_question(company_name):
     """Ask a question to a specific company"""
