@@ -1,5 +1,5 @@
 # backend/gunicorn.conf.py
-bind = "0.0.0.0:8000"  # Changed from 127.0.0.1 to 0.0.0.0
+bind = "127.0.0.1:8000"  # ✅ This keeps it private, behind Nginx
 workers = 2  # Reduced for shared hosting
 worker_class = "sync"
 timeout = 120
