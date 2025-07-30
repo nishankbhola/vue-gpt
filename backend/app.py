@@ -66,7 +66,7 @@ def allowed_file(filename):
 # Also update the ingest function to set proper ownership
 
 def create_chroma_vectorstore(vectorstore_path, company_name, max_retries=5):
-    """Create ChromaDB client with enhanced retry logic and proper ownership"""
+    """Create ChromaDB client with enhanced retry logic and proper ownership for version 1.0.15"""
     for attempt in range(max_retries):
         try:
             if company_name in vectorstore_cache:
@@ -75,19 +75,14 @@ def create_chroma_vectorstore(vectorstore_path, company_name, max_retries=5):
             # Ensure the directory exists and is clean
             if os.path.exists(vectorstore_path):
                 shutil.rmtree(vectorstore_path)
+                time.sleep(1)  # Wait for complete cleanup
             os.makedirs(vectorstore_path, exist_ok=True)
             
             # Set proper ownership for vectorstore directory
             set_www_data_ownership(vectorstore_path)
             
-            # Create ChromaDB client with explicit settings
-            client = chromadb.PersistentClient(
-                path=vectorstore_path,
-                settings=chromadb.Settings(
-                    anonymized_telemetry=False,
-                    allow_reset=True
-                )
-            )
+            # Create ChromaDB client for version 1.0.15 - simpler approach
+            client = chromadb.PersistentClient(path=vectorstore_path)
             
             embedding_function = get_embedding_function()
             
@@ -97,6 +92,7 @@ def create_chroma_vectorstore(vectorstore_path, company_name, max_retries=5):
             # Try to delete existing collection first
             try:
                 client.delete_collection(name=collection_name)
+                time.sleep(0.5)  # Small delay after deletion
             except Exception:
                 pass  # Collection might not exist
             
@@ -109,6 +105,7 @@ def create_chroma_vectorstore(vectorstore_path, company_name, max_retries=5):
             return client, collection
             
         except Exception as e:
+            logger.error(f"Attempt {attempt + 1} failed: {str(e)}")
             if attempt < max_retries - 1:
                 wait_time = 2 * (attempt + 1)
                 time.sleep(wait_time)
@@ -122,11 +119,31 @@ def create_chroma_vectorstore(vectorstore_path, company_name, max_retries=5):
                 raise e
 
 def get_company_vectorstore(company_name, vectorstore_path):
-    """Get or create company-specific vectorstore with proper caching"""
+    """Get or create company-specific vectorstore with proper caching for ChromaDB 1.0.15"""
     if company_name not in vectorstore_cache:
-        client, collection = create_chroma_vectorstore(vectorstore_path, company_name)
-        vectorstore_cache[company_name] = (client, collection)
+        try:
+            # Simple client creation for version 1.0.15
+            client = chromadb.PersistentClient(path=vectorstore_path)
+            embedding_function = get_embedding_function()
+            
+            # Use consistent collection name
+            collection_name = f"{company_name}_docs".replace("-", "_").replace(" ", "_")
+            
+            try:
+                collection = client.get_collection(
+                    name=collection_name,
+                    embedding_function=embedding_function
+                )
+            except Exception as e:
+                logger.error(f"Error getting collection {collection_name}: {e}")
+                raise ValueError(f"Collection {collection_name} not found. Please click 'Relearn PDFs' first.")
+            
+            vectorstore_cache[company_name] = (client, collection)
+        except Exception as e:
+            logger.error(f"Error creating vectorstore client: {e}")
+            raise e
     return vectorstore_cache[company_name]
+    
 
 def clear_company_vectorstore_cache(company_name):
     """Clear vectorstore cache for a specific company"""
