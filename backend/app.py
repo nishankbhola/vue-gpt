@@ -64,6 +64,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Also update the ingest function to set proper ownership
+
 def create_chroma_vectorstore(vectorstore_path, company_name, max_retries=5):
     """Create ChromaDB client with enhanced retry logic and proper ownership"""
     for attempt in range(max_retries):
@@ -71,31 +72,39 @@ def create_chroma_vectorstore(vectorstore_path, company_name, max_retries=5):
             if company_name in vectorstore_cache:
                 del vectorstore_cache[company_name]
             
+            # Ensure the directory exists and is clean
+            if os.path.exists(vectorstore_path):
+                shutil.rmtree(vectorstore_path)
             os.makedirs(vectorstore_path, exist_ok=True)
             
             # Set proper ownership for vectorstore directory
             set_www_data_ownership(vectorstore_path)
             
-            client = chromadb.PersistentClient(path=vectorstore_path)
-            embedding_function = get_embedding_function()
-            
-            # Get or create collection
-            collection = client.get_or_create_collection(
-                name=f"{company_name}_docs",
-                embedding_function=embedding_function
+            # Create ChromaDB client with explicit settings
+            client = chromadb.PersistentClient(
+                path=vectorstore_path,
+                settings=chromadb.Settings(
+                    anonymized_telemetry=False,
+                    allow_reset=True
+                )
             )
             
-            # Set ownership for any files created by ChromaDB
+            embedding_function = get_embedding_function()
+            
+            # Use a simpler collection name
+            collection_name = f"{company_name}_docs".replace("-", "_").replace(" ", "_")
+            
+            # Try to delete existing collection first
             try:
-                for root, dirs, files in os.walk(vectorstore_path):
-                    for file in files:
-                        file_path = os.path.join(root, file)
-                        set_www_data_ownership(file_path)
-                    for dir in dirs:
-                        dir_path = os.path.join(root, dir)
-                        set_www_data_ownership(dir_path)
-            except Exception as e:
-                logger.warning(f"Could not set ownership for all vectorstore files: {e}")
+                client.delete_collection(name=collection_name)
+            except Exception:
+                pass  # Collection might not exist
+            
+            # Create new collection
+            collection = client.create_collection(
+                name=collection_name,
+                embedding_function=embedding_function
+            )
             
             return client, collection
             
