@@ -81,9 +81,10 @@ def ingest_company_pdfs(company_name: str, persist_directory: str = None):
 
     print(f"📄 Found {len(pdf_files)} PDF files")
 
-    # Clean up old vectorstore
+    # Clean up old vectorstore completely
     if os.path.exists(persist_directory):
         shutil.rmtree(persist_directory)
+        time.sleep(1)  # Wait for cleanup
     os.makedirs(persist_directory, exist_ok=True)
 
     # Process PDFs
@@ -126,23 +127,59 @@ def ingest_company_pdfs(company_name: str, persist_directory: str = None):
 
     print(f"📊 Total chunks to process: {len(all_chunks)}")
 
-    # Create ChromaDB client and collection
-    client = chromadb.PersistentClient(path=persist_directory)
+    # Create ChromaDB client and collection with proper settings
+    client = chromadb.PersistentClient(
+        path=persist_directory,
+        settings=chromadb.Settings(
+            anonymized_telemetry=False,
+            allow_reset=True
+        )
+    )
+    
     embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
         model_name="all-MiniLM-L6-v2"
     )
     
-    collection = client.get_or_create_collection(
-        name=f"{company_name}_docs",
+    # Use a clean collection name
+    collection_name = f"{company_name}_docs".replace("-", "_").replace(" ", "_")
+    
+    # Delete existing collection if it exists
+    try:
+        client.delete_collection(name=collection_name)
+    except Exception:
+        pass  # Collection might not exist
+    
+    # Create new collection
+    collection = client.create_collection(
+        name=collection_name,
         embedding_function=embedding_function
     )
     
-    # Add documents to collection
-    collection.add(
-        documents=all_chunks,
-        metadatas=all_metadatas,
-        ids=all_ids
-    )
+    # Add documents to collection in batches to avoid memory issues
+    batch_size = 100
+    for i in range(0, len(all_chunks), batch_size):
+        batch_chunks = all_chunks[i:i+batch_size]
+        batch_metadatas = all_metadatas[i:i+batch_size]
+        batch_ids = all_ids[i:i+batch_size]
+        
+        collection.add(
+            documents=batch_chunks,
+            metadatas=batch_metadatas,
+            ids=batch_ids
+        )
+        print(f"📝 Added batch {i//batch_size + 1}/{(len(all_chunks) + batch_size - 1)//batch_size}")
+    
+    # Set proper ownership for all created files
+    try:
+        for root, dirs, files in os.walk(persist_directory):
+            for file in files:
+                file_path = os.path.join(root, file)
+                set_www_data_ownership(file_path)
+            for dir in dirs:
+                dir_path = os.path.join(root, dir)
+                set_www_data_ownership(dir_path)
+    except Exception as e:
+        print(f"⚠️ Could not set ownership for all files: {e}")
     
     print(f"✅ Successfully created vectorstore for {company_name}")
     print(f"📈 Ingested {len(all_chunks)} chunks")
