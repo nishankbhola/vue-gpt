@@ -63,7 +63,75 @@ def is_streamlit_cloud():
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Also update the ingest function to set proper ownership
+def get_vectorstore_root():
+    """Get the vectorstore root directory"""
+    return "/mount/tmp/vectorstores" if is_streamlit_cloud() else "vectorstores"
+
+def reset_entire_chromadb():
+    """Completely reset the entire ChromaDB database"""
+    try:
+        VECTORSTORE_ROOT = get_vectorstore_root()
+        
+        # Clear all cached vectorstores
+        global vectorstore_cache
+        vectorstore_cache.clear()
+        
+        # Force garbage collection to release any ChromaDB connections
+        import gc
+        gc.collect()
+        
+        # Wait a moment for connections to close
+        time.sleep(2)
+        
+        # Remove the entire vectorstore directory
+        if os.path.exists(VECTORSTORE_ROOT):
+            logger.info(f"🗑️ Removing entire vectorstore directory: {VECTORSTORE_ROOT}")
+            
+            # Try multiple methods to ensure complete removal
+            try:
+                # Method 1: Standard removal
+                shutil.rmtree(VECTORSTORE_ROOT)
+            except Exception as e1:
+                logger.warning(f"Standard removal failed: {e1}")
+                try:
+                    # Method 2: Force removal with sudo
+                    subprocess.run(['sudo', 'rm', '-rf', VECTORSTORE_ROOT], 
+                                 check=True, capture_output=True)
+                except Exception as e2:
+                    logger.warning(f"Sudo removal failed: {e2}")
+                    # Method 3: Manual file-by-file removal
+                    try:
+                        for root, dirs, files in os.walk(VECTORSTORE_ROOT, topdown=False):
+                            for file in files:
+                                try:
+                                    os.chmod(os.path.join(root, file), 0o777)
+                                    os.remove(os.path.join(root, file))
+                                except:
+                                    pass
+                            for dir in dirs:
+                                try:
+                                    os.chmod(os.path.join(root, dir), 0o777)
+                                    os.rmdir(os.path.join(root, dir))
+                                except:
+                                    pass
+                        os.rmdir(VECTORSTORE_ROOT)
+                    except Exception as e3:
+                        logger.error(f"Manual removal also failed: {e3}")
+                        raise e3
+        
+        # Wait for filesystem to sync
+        time.sleep(1)
+        
+        # Recreate the base directory
+        os.makedirs(VECTORSTORE_ROOT, exist_ok=True)
+        set_www_data_ownership(VECTORSTORE_ROOT)
+        
+        logger.info("✅ ChromaDB database completely reset")
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ Failed to reset ChromaDB: {e}")
+        return False
 
 def create_chroma_vectorstore(vectorstore_path, company_name, max_retries=5):
     """Create ChromaDB client with enhanced retry logic and proper ownership for version 1.0.15"""
@@ -219,7 +287,7 @@ def get_companies():
                 pdf_count = 0
             
             # Check if vectorstore exists
-            VECTORSTORE_ROOT = "/mount/tmp/vectorstores" if is_streamlit_cloud() else "vectorstores"
+            VECTORSTORE_ROOT = get_vectorstore_root()
             vectorstore_path = os.path.join(VECTORSTORE_ROOT, company)
             has_vectorstore = os.path.exists(vectorstore_path)
             
@@ -307,9 +375,8 @@ def add_company():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/companies/<company_name>', methods=['DELETE'])
-@app.route('/api/companies/<company_name>', methods=['DELETE'])
 def delete_company(company_name):
-    """Delete a company and all its data"""
+    """Delete a company and all its data with ChromaDB reset option"""
     import stat
     import time
     
@@ -354,6 +421,10 @@ def delete_company(company_name):
         # Clear vectorstore cache first
         clear_company_vectorstore_cache(company_name)
         
+        # Check if this is the last company - if so, reset entire ChromaDB
+        company_folders = [f for f in os.listdir(UPLOAD_FOLDER) 
+                          if os.path.isdir(os.path.join(UPLOAD_FOLDER, f)) and f != company_name]
+        
         errors = []
         
         # Delete PDFs
@@ -363,7 +434,7 @@ def delete_company(company_name):
                 errors.append(f"Could not fully remove PDF directory: {company_path}")
         
         # Delete vectorstore
-        VECTORSTORE_ROOT = "/mount/tmp/vectorstores" if is_streamlit_cloud() else "vectorstores"
+        VECTORSTORE_ROOT = get_vectorstore_root()
         vectorstore_path = os.path.join(VECTORSTORE_ROOT, company_name)
         if os.path.exists(vectorstore_path):
             if not safe_remove_tree(vectorstore_path):
@@ -378,6 +449,16 @@ def delete_company(company_name):
             except Exception as e:
                 errors.append(f"Could not remove logo: {e}")
         
+        # If no companies left or if there were vectorstore errors, reset entire ChromaDB
+        if len(company_folders) == 0 or any("vectorstore" in error for error in errors):
+            logger.info("🔄 Resetting entire ChromaDB database...")
+            if reset_entire_chromadb():
+                logger.info("✅ ChromaDB database reset successfully")
+                # Clear any vectorstore-related errors since we reset everything
+                errors = [error for error in errors if "vectorstore" not in error.lower()]
+            else:
+                errors.append("Failed to reset ChromaDB database")
+        
         if errors:
             # Some files couldn't be deleted, but we'll return partial success
             error_message = "Company deleted with some issues: " + "; ".join(errors)
@@ -391,7 +472,42 @@ def delete_company(company_name):
             
     except Exception as e:
         logger.error(f"Error deleting company {company_name}: {e}")
-        return jsonify({'error': f'Error deleting company: {str(e)}'}), 500
+        # Try to reset ChromaDB as a last resort
+        try:
+            reset_entire_chromadb()
+            return jsonify({
+                'success': True, 
+                'message': f'Deleted {company_name} (with database reset)', 
+                'warnings': [f'Had to reset database due to error: {str(e)}']
+            }), 200
+        except:
+            return jsonify({'error': f'Error deleting company: {str(e)}'}), 500
+
+# Add new endpoint for manual ChromaDB reset
+@app.route('/api/reset-database', methods=['POST'])
+def reset_database():
+    """Manually reset the entire ChromaDB database"""
+    try:
+        data = request.get_json()
+        password = data.get('password', '')
+        
+        # Require admin password for this operation
+        if password != ADMIN_PASSWORD:
+            return jsonify({'error': 'Admin password required'}), 401
+        
+        logger.info("🔄 Manual ChromaDB reset requested...")
+        
+        if reset_entire_chromadb():
+            return jsonify({
+                'success': True, 
+                'message': 'ChromaDB database reset successfully. All companies will need to relearn their PDFs.'
+            })
+        else:
+            return jsonify({'error': 'Failed to reset ChromaDB database'}), 500
+            
+    except Exception as e:
+        logger.error(f"Error in manual database reset: {e}")
+        return jsonify({'error': f'Error resetting database: {str(e)}'}), 500
 
 @app.route('/api/companies/<company_name>/logo', methods=['GET'])
 def get_company_logo(company_name):
@@ -476,11 +592,11 @@ def download_pdf(company_name, pdf_name):
 
 @app.route('/api/companies/<company_name>/relearn', methods=['POST'])
 def relearn_pdfs(company_name):
-    """Rebuild knowledge base for company - Updated for ChromaDB 1.0.15"""
+    """Rebuild knowledge base for company - Updated for ChromaDB 1.0.15 with better error handling"""
     try:
         from ingest import ingest_company_pdfs
         
-        VECTORSTORE_ROOT = "/mount/tmp/vectorstores" if is_streamlit_cloud() else "vectorstores"
+        VECTORSTORE_ROOT = get_vectorstore_root()
         vectorstore_path = os.path.join(VECTORSTORE_ROOT, company_name)
         
         # Clear the cached vectorstore
@@ -499,12 +615,37 @@ def relearn_pdfs(company_name):
         except Exception as ce:
             # Handle ChromaDB specific errors
             clear_company_vectorstore_cache(company_name)
-            if "already exists" in str(ce).lower():
-                return jsonify({'error': 'Collection already exists. Please try again.'}), 500
-            elif "tenant" in str(ce).lower():
-                return jsonify({'error': 'Database connection error. Please restart the server and try again.'}), 500
+            
+            # Check for common ChromaDB corruption indicators
+            if any(indicator in str(ce).lower() for indicator in [
+                "database is locked", "database corruption", "no such table", 
+                "tenant", "sqlite", "disk i/o error", "malformed"
+            ]):
+                logger.warning(f"ChromaDB corruption detected for {company_name}: {ce}")
+                
+                # Try to reset the entire ChromaDB and retry once
+                if reset_entire_chromadb():
+                    try:
+                        time.sleep(2)  # Wait for reset to complete
+                        vectordb = ingest_company_pdfs(company_name, persist_directory=vectorstore_path)
+                        return jsonify({
+                            'success': True, 
+                            'message': 'Knowledge base updated successfully after database reset!'
+                        })
+                    except Exception as retry_error:
+                        return jsonify({
+                            'error': f'Database corruption detected and reset attempted, but retry failed: {str(retry_error)}'
+                        }), 500
+                else:
+                    return jsonify({
+                        'error': 'Database corruption detected. Please try again or restart the server.'
+                    }), 500
             else:
-                return jsonify({'error': f'Vector database error: {str(ce)}'}), 500
+                # Other ChromaDB errors
+                if "already exists" in str(ce).lower():
+                    return jsonify({'error': 'Collection already exists. Please try again.'}), 500
+                else:
+                    return jsonify({'error': f'Vector database error: {str(ce)}'}), 500
         
     except ImportError as ie:
         return jsonify({'error': f'Import error: {str(ie)}'}), 500
@@ -512,7 +653,6 @@ def relearn_pdfs(company_name):
         clear_company_vectorstore_cache(company_name)
         logger.error(f"Unexpected error in relearn_pdfs: {str(e)}")
         return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
-        
             
 @app.route('/api/companies/<company_name>/ask', methods=['POST'])
 def ask_company_question(company_name):
@@ -524,7 +664,7 @@ def ask_company_question(company_name):
         if not query:
             return jsonify({'error': 'Question is required'}), 400
         
-        VECTORSTORE_ROOT = "/mount/tmp/vectorstores" if is_streamlit_cloud() else "vectorstores"
+        VECTORSTORE_ROOT = get_vectorstore_root()
         vectorstore_path = os.path.join(VECTORSTORE_ROOT, company_name)
         
         if not os.path.exists(vectorstore_path):
@@ -594,9 +734,11 @@ Please provide a clear, professional response that would be helpful for insuranc
             
     except Exception as e:
         error_msg = str(e)
-        if "no such table: tenants" in error_msg:
+        if any(indicator in error_msg.lower() for indicator in [
+            "no such table: tenants", "database corruption", "disk i/o error", "malformed"
+        ]):
             clear_company_vectorstore_cache(company_name)
-            return jsonify({'error': 'Database error detected. Please click Relearn PDFs to rebuild the knowledge base.'}), 500
+            return jsonify({'error': 'Database corruption detected. Please click Relearn PDFs to rebuild the knowledge base.'}), 500
         else:
             clear_company_vectorstore_cache(company_name)
             return jsonify({'error': f'Error accessing knowledge base: {error_msg}'}), 500
@@ -617,7 +759,7 @@ def ask_all_companies():
         if not company_folders:
             return jsonify({'error': 'No companies found to query.'}), 404
         
-        VECTORSTORE_ROOT = "/mount/tmp/vectorstores" if is_streamlit_cloud() else "vectorstores"
+        VECTORSTORE_ROOT = get_vectorstore_root()
         responses = []
         
         for company in company_folders:
@@ -694,11 +836,13 @@ Please provide a clear, professional response that would be helpful for insuranc
                         
                 except Exception as e:
                     error_msg = str(e)
-                    if "no such table: tenants" in error_msg:
+                    if any(indicator in error_msg.lower() for indicator in [
+                        "no such table: tenants", "database corruption", "disk i/o error", "malformed"
+                    ]):
                         clear_company_vectorstore_cache(company)
                         responses.append({
                             'company': company,
-                            'error': 'Database error detected. Please click Relearn PDFs to rebuild the knowledge base.',
+                            'error': 'Database corruption detected. Please click Relearn PDFs to rebuild the knowledge base.',
                             'success': False
                         })
                     else:
