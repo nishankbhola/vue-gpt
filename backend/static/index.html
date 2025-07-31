@@ -464,8 +464,122 @@
 
         .response-content {
             color: #374151;
+            line-height: 1.8;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .response-content p {
             margin-bottom: 16px;
+            text-align: justify;
+        }
+        
+        .response-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Typography Enhancements */
+        .response-content h1, .response-content h2, .response-content h3, 
+        .response-content h4, .response-content h5, .response-content h6 {
+            color: #1f2937;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+            line-height: 1.4;
+        }
+        
+        .response-content h1 { font-size: 24px; }
+        .response-content h2 { font-size: 20px; }
+        .response-content h3 { font-size: 18px; }
+        .response-content h4 { font-size: 16px; }
+        
+        /* List Styling */
+        .response-content ul, .response-content ol {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+        
+        .response-content li {
+            margin-bottom: 8px;
             line-height: 1.7;
+        }
+        
+        .response-content ul li {
+            list-style-type: none;
+            position: relative;
+        }
+        
+        .response-content ul li::before {
+            content: "•";
+            color: #6366f1;
+            font-weight: bold;
+            position: absolute;
+            left: -16px;
+            font-size: 18px;
+        }
+        
+        /* Emphasis and Strong Text */
+        .response-content strong, .response-content b {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .response-content em, .response-content i {
+            font-style: italic;
+            color: #4b5563;
+        }
+        
+        /* Code and Technical Terms */
+        .response-content code {
+            background: #f1f5f9;
+            color: #1e40af;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+            font-size: 13px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        /* Blockquotes for Important Information */
+        .response-content blockquote {
+            border-left: 4px solid #6366f1;
+            background: #f8faff;
+            margin: 16px 0;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #4b5563;
+        }
+        
+        /* Professional Answer Formatting */
+        .ai-response-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .ai-badge {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .response-thinking {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-style: italic;
+            color: #64748b;
+            font-size: 14px;
         }
 
         .sources-section {
@@ -1132,8 +1246,15 @@
                                         <div v-if="response.model_used" class="response-model">{{ response.model_used }}</div>
                                     </div>
                                     
-                                    <div v-if="response.success" class="response-content">
-                                        {{ response.answer }}
+                                    <div v-if="response.success">
+                                        <div class="ai-response-header">
+                                            <div class="ai-badge">AI Assistant</div>
+                                            <span class="text-sm text-gray-500">{{ response.model_used || 'Gemini Pro' }}</span>
+                                        </div>
+                                        <div class="response-thinking">
+                                            💭 Analyzing {{ response.company }} documentation for your inquiry...
+                                        </div>
+                                        <div class="response-content" v-html="formatResponse(response.answer)"></div>
                                     </div>
                                     <div v-else class="alert alert-error">
                                         <i class="fas fa-exclamation-circle"></i>
@@ -1225,9 +1346,14 @@
                                         <div class="text-gray-900">{{ companyResponse.question }}</div>
                                     </div>
                                     
-                                    <div class="response-content">
-                                        {{ companyResponse.answer }}
+                                    <div class="ai-response-header">
+                                        <div class="ai-badge">AI Assistant</div>
+                                        <span class="text-sm text-gray-500">{{ response.model_used || 'Gemini Pro' }}</span>
                                     </div>
+                                    <div class="response-thinking">
+                                        💭 Analyzing your question about {{ selectedCompany }} policies and guidelines...
+                                    </div>
+                                    <div class="response-content" v-html="formatResponse(response.answer)"></div>
                                     
                                     <div v-if="companyResponse.sources && companyResponse.sources.length > 0" class="sources-section">
                                         <div class="sources-title">Source Documents</div>
@@ -1467,6 +1593,44 @@
                 
                 getFileName(fullPath) {
                     return fullPath.split('/').pop().split('\\').pop();
+                },
+
+                // Add this to your methods object
+                formatResponse(text) {
+                    if (!text) return text;
+                    
+                    // Convert markdown-like formatting to HTML
+                    let formatted = text
+                        // Convert **bold** to <strong>
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        // Convert *italic* to <em>
+                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                        // Convert line breaks to paragraphs
+                        .split('\n\n')
+                        .map(paragraph => paragraph.trim())
+                        .filter(paragraph => paragraph.length > 0)
+                        .map(paragraph => {
+                            // Handle lists
+                            if (paragraph.includes('\n- ') || paragraph.includes('\n• ')) {
+                                const items = paragraph.split('\n').filter(line => line.trim().startsWith('- ') || line.trim().startsWith('• '));
+                                if (items.length > 0) {
+                                    const listItems = items.map(item => `<li>${item.replace(/^[- •]\s*/, '')}</li>`).join('');
+                                    return `<ul>${listItems}</ul>`;
+                                }
+                            }
+                            // Handle numbered lists
+                            if (paragraph.match(/^\d+\./m)) {
+                                const items = paragraph.split('\n').filter(line => line.trim().match(/^\d+\./));
+                                if (items.length > 0) {
+                                    const listItems = items.map(item => `<li>${item.replace(/^\d+\.\s*/, '')}</li>`).join('');
+                                    return `<ol>${listItems}</ol>`;
+                                }
+                            }
+                            return `<p>${paragraph}</p>`;
+                        })
+                        .join('');
+                    
+                    return formatted;
                 },
                 
                 // Server Connection Check
