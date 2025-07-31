@@ -137,15 +137,15 @@ def create_chromadb_client_with_retry(persist_directory, company_name, max_retri
             gc.collect()
             time.sleep(1)
             
-            # Create client
+            # Create client - ChromaDB 1.0.15 syntax
             client = chromadb.PersistentClient(path=persist_directory)
             
             embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
                 model_name="all-MiniLM-L6-v2"
             )
             
-            # Use a clean collection name
-            collection_name = f"{company_name}_docs".replace("-", "_").replace(" ", "_")
+            # Use a simple collection name
+            collection_name = f"{company_name}_docs".replace("-", "_").replace(" ", "_").lower()
             
             # Delete existing collection if it exists
             try:
@@ -154,17 +154,25 @@ def create_chromadb_client_with_retry(persist_directory, company_name, max_retri
                     if col.name == collection_name:
                         client.delete_collection(name=collection_name)
                         logger.info(f"🗑️ Deleted existing collection: {collection_name}")
-                        time.sleep(1)  # Wait after deletion
+                        time.sleep(2)  # Longer wait after deletion for 1.0.15
                         break
             except Exception as e:
-                logger.info(f"ℹ️ No existing collection found or error during deletion: {e}")
+                logger.info(f"ℹ️ No existing collection found: {e}")
             
-            # Create new collection
-            collection = client.create_collection(
-                name=collection_name,
-                embedding_function=embedding_function
-            )
-            logger.info(f"✨ Created new collection: {collection_name}")
+            # Create new collection with get_or_create to avoid conflicts
+            try:
+                collection = client.get_or_create_collection(
+                    name=collection_name,
+                    embedding_function=embedding_function
+                )
+                logger.info(f"✨ Created/Retrieved collection: {collection_name}")
+            except Exception as e:
+                logger.warning(f"get_or_create failed: {e}, trying create_collection")
+                collection = client.create_collection(
+                    name=collection_name,
+                    embedding_function=embedding_function
+                )
+                logger.info(f"✨ Created new collection: {collection_name}")
             
             return client, collection
             
@@ -173,9 +181,9 @@ def create_chromadb_client_with_retry(persist_directory, company_name, max_retri
             
             if attempt < max_retries - 1:
                 # Clean up and retry
-                logger.info(f"🔄 Retrying in {2 * (attempt + 1)} seconds...")
+                logger.info(f"🔄 Retrying in {3 * (attempt + 1)} seconds...")
                 force_cleanup_chromadb(persist_directory)
-                time.sleep(2 * (attempt + 1))
+                time.sleep(3 * (attempt + 1))  # Longer wait for 1.0.15
                 os.makedirs(persist_directory, exist_ok=True)
                 set_www_data_ownership(persist_directory)
             else:
