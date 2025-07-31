@@ -2,8 +2,8 @@ import os
 import time
 import shutil
 import gc
-from langchain.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 import chromadb
 from chromadb.utils import embedding_functions
 import pwd
