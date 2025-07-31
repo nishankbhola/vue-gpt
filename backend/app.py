@@ -80,8 +80,8 @@ def reset_entire_chromadb():
         import gc
         gc.collect()
         
-        # Wait a moment for connections to close
-        time.sleep(2)
+        # Wait longer for ChromaDB 1.0.15
+        time.sleep(3)
         
         # Remove the entire vectorstore directory
         if os.path.exists(VECTORSTORE_ROOT):
@@ -119,8 +119,8 @@ def reset_entire_chromadb():
                         logger.error(f"Manual removal also failed: {e3}")
                         raise e3
         
-        # Wait for filesystem to sync
-        time.sleep(1)
+        # Wait longer for filesystem to sync with ChromaDB 1.0.15
+        time.sleep(2)
         
         # Recreate the base directory
         os.makedirs(VECTORSTORE_ROOT, exist_ok=True)
@@ -134,7 +134,7 @@ def reset_entire_chromadb():
         return False
 
 def create_chroma_vectorstore(vectorstore_path, company_name, max_retries=5):
-    """Create ChromaDB client with enhanced retry logic and proper ownership for version 1.0.15"""
+    """Create ChromaDB client with enhanced retry logic for version 1.0.15"""
     for attempt in range(max_retries):
         try:
             if company_name in vectorstore_cache:
@@ -143,39 +143,50 @@ def create_chroma_vectorstore(vectorstore_path, company_name, max_retries=5):
             # Ensure the directory exists and is clean
             if os.path.exists(vectorstore_path):
                 shutil.rmtree(vectorstore_path)
-                time.sleep(1)  # Wait for complete cleanup
+                time.sleep(2)  # Longer wait for 1.0.15
             os.makedirs(vectorstore_path, exist_ok=True)
             
             # Set proper ownership for vectorstore directory
             set_www_data_ownership(vectorstore_path)
             
-            # Create ChromaDB client for version 1.0.15 - simpler approach
+            # Create ChromaDB client for version 1.0.15
             client = chromadb.PersistentClient(path=vectorstore_path)
             
             embedding_function = get_embedding_function()
             
             # Use a simpler collection name
-            collection_name = f"{company_name}_docs".replace("-", "_").replace(" ", "_")
+            collection_name = f"{company_name}_docs".replace("-", "_").replace(" ", "_").lower()
             
             # Try to delete existing collection first
             try:
-                client.delete_collection(name=collection_name)
-                time.sleep(0.5)  # Small delay after deletion
+                existing_collections = client.list_collections()
+                for col in existing_collections:
+                    if col.name == collection_name:
+                        client.delete_collection(name=collection_name)
+                        time.sleep(2)  # Longer wait after deletion
+                        break
             except Exception:
                 pass  # Collection might not exist
             
-            # Create new collection
-            collection = client.create_collection(
-                name=collection_name,
-                embedding_function=embedding_function
-            )
+            # Create new collection with get_or_create
+            try:
+                collection = client.get_or_create_collection(
+                    name=collection_name,
+                    embedding_function=embedding_function
+                )
+            except Exception:
+                # Fallback to create_collection
+                collection = client.create_collection(
+                    name=collection_name,
+                    embedding_function=embedding_function
+                )
             
             return client, collection
             
         except Exception as e:
             logger.error(f"Attempt {attempt + 1} failed: {str(e)}")
             if attempt < max_retries - 1:
-                wait_time = 2 * (attempt + 1)
+                wait_time = 3 * (attempt + 1)  # Longer wait times
                 time.sleep(wait_time)
                 
                 if os.path.exists(vectorstore_path):
@@ -195,7 +206,7 @@ def get_company_vectorstore(company_name, vectorstore_path):
             embedding_function = get_embedding_function()
             
             # Use consistent collection name
-            collection_name = f"{company_name}_docs".replace("-", "_").replace(" ", "_")
+            collection_name = f"{company_name}_docs".replace("-", "_").replace(" ", "_").lower()
             
             try:
                 collection = client.get_collection(
