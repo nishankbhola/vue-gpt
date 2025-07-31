@@ -4,21 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Broker-gpt - Insurance Broker Assistant</title>
-    <!-- Vue.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
-    <!-- Axios CDN for HTTP requests -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
-    <!-- Font Awesome for icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS CDN for utility classes -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Marked.js CDN for Markdown parsing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.10/marked.min.js"></script>
-
     <style>
-        /* Base styles from original, adapted for Tailwind where appropriate */
         * {
             margin: 0;
             padding: 0;
@@ -46,14 +36,12 @@
             padding: 0;
             overflow-y: auto;
             box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
-            @apply flex-shrink-0; /* Ensure sidebar doesn't shrink */
         }
 
         .sidebar-header {
             padding: 24px;
             border-bottom: 1px solid #e2e8f0;
             background: #ffffff;
-            @apply sticky top-0 z-10; /* Make header sticky */
         }
 
         .logo-section {
@@ -234,14 +222,12 @@
             flex: 1;
             background: #f8fafc;
             overflow-y: auto;
-            @apply flex flex-col; /* Make main content a flex column */
         }
 
         .main-header {
             background: #ffffff;
             border-bottom: 1px solid #e2e8f0;
             padding: 32px 40px;
-            @apply sticky top-0 z-10; /* Make header sticky */
         }
 
         .main-title {
@@ -265,7 +251,6 @@
             padding: 0 40px;
             display: flex;
             gap: 0;
-            @apply sticky top-[120px] z-10; /* Adjust top position based on header height */
         }
 
         .tab-button {
@@ -295,7 +280,6 @@
         /* Content Area */
         .content-area {
             padding: 40px;
-            @apply flex-grow overflow-y-auto; /* Allow content to grow and scroll */
         }
 
         .content-card {
@@ -433,130 +417,87 @@
         /* Question Interface */
         .question-interface {
             margin-bottom: 32px;
-            @apply sticky bottom-0 bg-white pt-4 pb-6 z-20 border-t border-gray-200; /* Sticky input at bottom */
         }
 
         .question-input {
             display: flex;
             gap: 12px;
             align-items: flex-end;
-            @apply max-w-3xl mx-auto; /* Center input */
         }
 
         .question-input input {
             flex: 1;
         }
 
-        /* Chat Message Styles */
-        .chat-container {
-            @apply flex flex-col gap-6 p-8; /* Spacing between messages */
+        /* Response Styles */
+        .response-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
         }
 
-        .chat-message {
-            @apply flex gap-4 items-start;
+        .response-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        .chat-message.user {
-            @apply justify-end; /* Align user messages to the right */
+        .response-company {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 16px;
         }
 
-        .chat-message.assistant {
-            @apply justify-start; /* Align assistant messages to the left */
+        .response-model {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
         }
 
-        .message-avatar {
-            @apply w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-white font-semibold;
-        }
-
-        .message-avatar.user {
-            @apply bg-blue-500;
-        }
-
-        .message-avatar.assistant {
-            @apply bg-purple-600;
-        }
-
-        .message-bubble {
-            @apply max-w-3xl p-4 rounded-xl shadow-sm text-gray-800;
+        .response-content {
+            color: #374151;
+            margin-bottom: 16px;
             line-height: 1.7;
         }
 
-        .message-bubble.user {
-            @apply bg-blue-50 text-blue-900 rounded-br-none;
-        }
-
-        .message-bubble.assistant {
-            @apply bg-white border border-gray-200 rounded-bl-none;
-        }
-
-        .message-content {
-            @apply prose prose-sm max-w-none; /* Apply prose styles for markdown */
-        }
-
-        /* Markdown specific styles within .message-content */
-        .message-content h1, .message-content h2, .message-content h3, .message-content h4, .message-content h5, .message-content h6 {
-            @apply text-gray-900 font-semibold mb-2 mt-4;
-        }
-        .message-content p {
-            @apply mb-3;
-        }
-        .message-content ul, .message-content ol {
-            @apply list-inside mb-3 pl-4;
-        }
-        .message-content li {
-            @apply mb-1;
-        }
-        .message-content pre {
-            @apply bg-gray-100 p-3 rounded-md text-sm overflow-x-auto;
-        }
-        .message-content code {
-            @apply bg-gray-100 px-1 py-0.5 rounded text-red-700;
-        }
-        .message-content a {
-            @apply text-blue-600 hover:underline;
-        }
-        .message-content strong {
-            @apply font-bold;
-        }
-        .message-content em {
-            @apply italic;
-        }
-
-        /* Typewriter effect cursor */
-        .typing-cursor {
-            display: inline-block;
-            width: 2px;
-            height: 1.2em; /* Adjust to font size */
-            background-color: #334155;
-            vertical-align: middle;
-            animation: blink-caret 0.75s step-end infinite;
-        }
-
-        @keyframes blink-caret {
-            from, to { background-color: transparent; }
-            50% { background-color: #334155; }
-        }
-
-        /* Sources Section */
         .sources-section {
-            @apply border-t border-gray-100 pt-4 mt-4;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 16px;
         }
 
         .sources-title {
-            @apply text-sm font-semibold text-gray-700 mb-3;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
         }
 
         .source-item {
-            @apply bg-gray-50 border border-gray-200 rounded-lg p-3 mb-2 flex flex-col gap-2;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
         }
 
         .source-content {
-            @apply text-xs text-gray-600 font-mono overflow-hidden text-ellipsis whitespace-nowrap;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
         }
-        .source-content-expanded {
-            @apply text-sm text-gray-600 font-mono whitespace-normal;
-        }
-
 
         /* Loading States */
         .loading {
@@ -938,7 +879,7 @@
             }
         }
 
-        /* Utility Classes (already present, ensured for consistency) */
+        /* Utility Classes */
         .w-full { width: 100%; }
         .flex { display: flex; }
         .items-center { align-items: center; }
@@ -1142,86 +1083,81 @@
                                 <div class="empty-state-title">Backend Server Required</div>
                                 <div class="empty-state-text">
                                     Please start the Flask backend server to use Broker-gpt.<br><br>
-                                    Run: <code class="bg-gray-100 px-2 py-1 rounded font-mono text-sm">python backend/app.py</code>
+                                    Run: <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-family: monospace;">python backend/app.py</code>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- General Chat View -->
-                    <div v-else-if="currentView === 'general'" class="flex flex-col h-full">
-                        <div class="flex-grow overflow-y-auto pb-24"> <!-- Added padding for input area -->
-                            <div class="chat-container">
-                                <p class="text-gray-600 mb-6 text-center">Ask questions across all companies to get comprehensive insights.</p>
-                                
-                                <div v-if="generalMessages.length === 0 && !loadingGeneral" class="empty-state">
-                                    <div class="empty-state-icon">
-                                        <i class="fas fa-comment-dots"></i>
-                                    </div>
-                                    <div class="empty-state-title">Start a Conversation</div>
-                                    <div class="empty-state-text">
-                                        Type your question below to get started.
-                                    </div>
-                                </div>
-
-                                <div v-for="(message, index) in generalMessages" :key="index" 
-                                     class="chat-message" :class="message.role">
-                                    <div v-if="message.role === 'assistant'" class="message-avatar assistant">AI</div>
-                                    <div class="message-bubble" :class="message.role">
-                                        <div class="font-semibold mb-2" v-if="message.company">{{ message.company }}</div>
-                                        <div class="message-content" v-html="message.renderedContent"></div>
-                                        <div v-if="message.sources && message.sources.length > 0" class="sources-section">
-                                            <div class="sources-title">Source Documents</div>
-                                            <div v-for="(source, sIndex) in message.sources" :key="sIndex" class="source-item">
-                                                <div class="flex justify-between items-center w-full">
-                                                    <div class="pdf-info">
-                                                        <div class="pdf-name">{{ getFileName(source.source) }}</div>
-                                                        <div class="pdf-size" v-if="source.page_number">Page {{ source.page_number }}</div>
-                                                    </div>
-                                                    <button class="btn btn-secondary btn-sm" 
-                                                            @click="downloadPdf(message.company, getFileName(source.source))">
-                                                        <i class="fas fa-download"></i>
-                                                        Download
-                                                    </button>
-                                                </div>
-                                                <div class="source-content" :class="{ 'source-content-expanded': source.expanded }" @click="source.expanded = !source.expanded">
-                                                    {{ source.content }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div v-if="message.role === 'user'" class="message-avatar user">You</div>
-                                </div>
-
-                                <div v-if="loadingGeneral" class="chat-message assistant">
-                                    <div class="message-avatar assistant">AI</div>
-                                    <div class="message-bubble assistant">
-                                        <div class="message-content flex items-center gap-2">
-                                            <div class="spinner w-4 h-4 border-2"></div>
-                                            <span>Thinking...</span>
-                                        </div>
-                                    </div>
+                    <div v-else-if="currentView === 'general'" class="content-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-comments"></i>
+                                General Chat
+                            </h2>
+                        </div>
+                        <div class="card-content">
+                            <p class="text-gray-600 mb-6">Ask questions across all companies to get comprehensive insights.</p>
+                            
+                            <div class="question-interface">
+                                <div class="question-input">
+                                    <input v-model="generalQuery" 
+                                           class="form-control" 
+                                           placeholder="Ask a general question across all companies..."
+                                           @keyup.enter="askAllCompanies" />
+                                    <button class="btn btn-primary" @click="askAllCompanies" :disabled="!generalQuery || loadingGeneral">
+                                        <i class="fas" :class="loadingGeneral ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+                                        {{ loadingGeneral ? 'Processing...' : 'Ask All' }}
+                                    </button>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="question-interface">
-                            <div class="question-input">
-                                <input v-model="generalQuery" 
-                                       class="form-control" 
-                                       placeholder="Ask a general question across all companies..."
-                                       @keyup.enter="askAllCompanies"
-                                       :disabled="loadingGeneral" />
-                                <button class="btn btn-primary" @click="askAllCompanies" :disabled="!generalQuery || loadingGeneral">
-                                    <i class="fas" :class="loadingGeneral ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
-                                    {{ loadingGeneral ? 'Processing...' : 'Ask All' }}
-                                </button>
+                            
+                            <div v-if="loadingGeneral" class="loading">
+                                <div class="spinner"></div>
+                                Analyzing responses from all companies...
+                            </div>
+                            
+                            <div v-if="generalResponses.length > 0">
+                                <div v-for="response in generalResponses" :key="response.company" class="response-card">
+                                    <div class="response-header">
+                                        <img v-if="getCompanyLogo(response.company)" 
+                                             :src="getCompanyLogo(response.company)" 
+                                             :alt="response.company" 
+                                             style="width: 32px; height: 32px; border-radius: 8px;">
+                                        <div v-else style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-building" style="color: #64748b;"></i>
+                                        </div>
+                                        <div class="response-company">{{ response.company }}</div>
+                                        <div v-if="response.model_used" class="response-model">{{ response.model_used }}</div>
+                                    </div>
+                                    
+                                    <div v-if="response.success" class="response-content">
+                                        {{ response.answer }}
+                                    </div>
+                                    <div v-else class="alert alert-error">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <span>{{ response.error }}</span>
+                                    </div>
+                                    
+                                    <div v-if="response.sources && response.sources.length > 0" class="sources-section">
+                                        <div class="sources-title">Source Documents</div>
+                                        <div v-for="(source, index) in response.sources" :key="index" class="source-item">
+                                            <div class="source-content">{{ source.content }}</div>
+                                            <button class="btn btn-secondary btn-sm" 
+                                                    @click="downloadPdf(response.company, getFileName(source.source))">
+                                                <i class="fas fa-download"></i>
+                                                Download {{ getFileName(source.source) }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Ask Questions View -->
-                    <div v-else-if="currentView === 'questions'" class="flex flex-col h-full">
+                    <div v-else-if="currentView === 'questions'" class="content-card">
                         <div v-if="!selectedCompany" class="empty-state">
                             <div class="empty-state-icon">
                                 <i class="fas fa-arrow-left"></i>
@@ -1230,92 +1166,80 @@
                             <div class="empty-state-text">Choose a company from the sidebar to start asking questions.</div>
                         </div>
                         
-                        <div v-else class="flex flex-col h-full">
+                        <div v-else>
                             <div class="card-header">
                                 <div class="flex items-center gap-4">
                                     <img v-if="getCompanyLogo(selectedCompany)" 
                                          :src="getCompanyLogo(selectedCompany)" 
                                          :alt="selectedCompany" 
-                                         class="w-12 h-12 rounded-xl object-cover">
-                                    <div v-else class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
-                                        <i class="fas fa-building text-gray-500 text-xl"></i>
+                                         style="width: 48px; height: 48px; border-radius: 12px;">
+                                    <div v-else style="width: 48px; height: 48px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-building" style="color: #64748b; font-size: 20px;"></i>
                                     </div>
                                     <div>
-                                        <h2 class="card-title text-2xl font-bold" style="margin: 0;">{{ selectedCompany }}</h2>
-                                        <p class="text-gray-600 mt-1 text-base">Ask specific questions about this company's policies and guidelines</p>
+                                        <h2 class="card-title" style="margin: 0;">{{ selectedCompany }}</h2>
+                                        <p style="color: #64748b; margin: 4px 0 0 0; font-size: 14px;">Ask specific questions about this company's policies and guidelines</p>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="flex-grow overflow-y-auto pb-24"> <!-- Added padding for input area -->
-                                <div class="chat-container">
-                                    <div v-if="!hasVectorstore" class="alert alert-info">
-                                        <i class="fas fa-info-circle"></i>
-                                        <span>Upload PDFs for <strong>{{ selectedCompany }}</strong> and use admin access to click 'Relearn PDFs' to start.</span>
+                            <div class="card-content">
+                                <div v-if="!hasVectorstore" class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Upload PDFs for <strong>{{ selectedCompany }}</strong> and use admin access to click 'Relearn PDFs' to start.</span>
+                                </div>
+                                
+                                <div v-else class="question-interface">
+                                    <div class="question-input">
+                                        <input v-model="companyQuery" 
+                                               class="form-control" 
+                                               placeholder="Ask about underwriting guidelines, policies, or procedures..."
+                                               @keyup.enter="askCompanyQuestion" />
+                                        <button class="btn btn-primary" @click="askCompanyQuestion" :disabled="!companyQuery || loadingCompany">
+                                            <i class="fas" :class="loadingCompany ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+                                            {{ loadingCompany ? 'Processing...' : 'Ask' }}
+                                        </button>
                                     </div>
-
-                                    <div v-if="companyMessages.length === 0 && !loadingCompany" class="empty-state">
-                                        <div class="empty-state-icon">
-                                            <i class="fas fa-question-circle"></i>
+                                </div>
+                                
+                                <div v-if="loadingCompany" class="loading">
+                                    <div class="spinner"></div>
+                                    Broker-gpt is analyzing your question...
+                                </div>
+                                
+                                <div v-if="companyResponse" class="response-card">
+                                    <div class="response-header">
+                                        <img v-if="getCompanyLogo(selectedCompany)" 
+                                             :src="getCompanyLogo(selectedCompany)" 
+                                             :alt="selectedCompany" 
+                                             style="width: 32px; height: 32px; border-radius: 8px;">
+                                        <div v-else style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-building" style="color: #64748b;"></i>
                                         </div>
-                                        <div class="empty-state-title">Ask a Question</div>
-                                        <div class="empty-state-text">
-                                            Type your question about {{ selectedCompany }} below.
-                                        </div>
+                                        <div class="response-company">{{ selectedCompany }}</div>
+                                        <div v-if="companyResponse.model_used" class="response-model">{{ companyResponse.model_used }}</div>
                                     </div>
                                     
-                                    <div v-for="(message, index) in companyMessages" :key="index" 
-                                         class="chat-message" :class="message.role">
-                                        <div v-if="message.role === 'assistant'" class="message-avatar assistant">AI</div>
-                                        <div class="message-bubble" :class="message.role">
-                                            <div class="font-semibold mb-2" v-if="message.company">{{ message.company }}</div>
-                                            <div class="message-content" v-html="message.renderedContent"></div>
-                                            <div v-if="message.sources && message.sources.length > 0" class="sources-section">
-                                                <div class="sources-title">Source Documents</div>
-                                                <div v-for="(source, sIndex) in message.sources" :key="sIndex" class="source-item">
-                                                    <div class="flex justify-between items-center w-full">
-                                                        <div class="pdf-info">
-                                                            <div class="pdf-name">{{ getFileName(source.source) }}</div>
-                                                            <div class="pdf-size" v-if="source.page_number">Page {{ source.page_number }}</div>
-                                                        </div>
-                                                        <button class="btn btn-secondary btn-sm" 
-                                                                @click="downloadPdf(selectedCompany, getFileName(source.source))">
-                                                            <i class="fas fa-download"></i>
-                                                            Download
-                                                        </button>
-                                                    </div>
-                                                    <div class="source-content" :class="{ 'source-content-expanded': source.expanded }" @click="source.expanded = !source.expanded">
-                                                        {{ source.content }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div v-if="message.role === 'user'" class="message-avatar user">You</div>
+                                    <div class="mb-4" style="padding: 12px; background: #f8fafc; border-radius: 8px; border-left: 3px solid #6366f1;">
+                                        <div class="font-medium text-gray-700 text-sm">Question:</div>
+                                        <div class="text-gray-900">{{ companyResponse.question }}</div>
                                     </div>
-
-                                    <div v-if="loadingCompany" class="chat-message assistant">
-                                        <div class="message-avatar assistant">AI</div>
-                                        <div class="message-bubble assistant">
-                                            <div class="message-content flex items-center gap-2">
-                                                <div class="spinner w-4 h-4 border-2"></div>
-                                                <span>Thinking...</span>
-                                            </div>
+                                    
+                                    <div class="response-content">
+                                        {{ companyResponse.answer }}
+                                    </div>
+                                    
+                                    <div v-if="companyResponse.sources && companyResponse.sources.length > 0" class="sources-section">
+                                        <div class="sources-title">Source Documents</div>
+                                        <div v-for="(source, index) in companyResponse.sources" :key="index" class="source-item">
+                                            <div class="source-content">{{ source.content }}</div>
+                                            <button class="btn btn-secondary btn-sm" 
+                                                    @click="downloadPdf(selectedCompany, getFileName(source.source))">
+                                                <i class="fas fa-download"></i>
+                                                Download {{ getFileName(source.source) }}
+                                            </button>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            
-                            <div class="question-interface">
-                                <div class="question-input">
-                                    <input v-model="companyQuery" 
-                                           class="form-control" 
-                                           placeholder="Ask about underwriting guidelines, policies, or procedures..."
-                                           @keyup.enter="askCompanyQuestion"
-                                           :disabled="loadingCompany" />
-                                    <button class="btn btn-primary" @click="askCompanyQuestion" :disabled="!companyQuery || loadingCompany">
-                                        <i class="fas" :class="loadingCompany ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
-                                        {{ loadingCompany ? 'Processing...' : 'Ask' }}
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -1487,11 +1411,11 @@
                     selectedPdfFile: null,
                     relearning: false,
                     
-                    // Questions & Chat History
+                    // Questions
                     generalQuery: '',
                     companyQuery: '',
-                    generalMessages: [], // Stores {role: 'user'|'assistant', content: '...', renderedContent: '...', company: '...', sources: [...]}
-                    companyMessages: [], // Stores {role: 'user'|'assistant', content: '...', renderedContent: '...', company: '...', sources: [...]}
+                    generalResponses: [],
+                    companyResponse: null,
                     loadingGeneral: false,
                     loadingCompany: false,
                     
@@ -1544,27 +1468,6 @@
                 getFileName(fullPath) {
                     return fullPath.split('/').pop().split('\\').pop();
                 },
-
-                // Typewriter effect simulation
-                async typeMessage(messageObject, targetArray) {
-                    const fullContent = messageObject.content;
-                    messageObject.renderedContent = ''; // Start with empty content
-                    let i = 0;
-                    const typingSpeed = 10; // milliseconds per character
-
-                    return new Promise(resolve => {
-                        const typeChar = () => {
-                            if (i < fullContent.length) {
-                                messageObject.renderedContent += fullContent.charAt(i);
-                                i++;
-                                setTimeout(typeChar, typingSpeed);
-                            } else {
-                                resolve(); // Typing complete
-                            }
-                        };
-                        typeChar();
-                    });
-                },
                 
                 // Server Connection Check
                 async checkServerConnection() {
@@ -1595,7 +1498,7 @@
                 
                 selectCompany(companyName) {
                     this.selectedCompany = companyName;
-                    this.companyMessages = []; // Clear messages when company changes
+                    this.companyResponse = null;
                     this.companyQuery = '';
                     this.loadCurrentPdfs();
                 },
@@ -1749,116 +1652,44 @@
                 async askCompanyQuestion() {
                     if (!this.companyQuery || !this.selectedCompany) return;
                     
-                    const userMessage = { 
-                        role: 'user', 
-                        content: this.companyQuery, 
-                        renderedContent: marked.parse(this.companyQuery || ''),
-                        company: this.selectedCompany 
-                    };
-                    this.companyMessages.push(userMessage);
-                    this.companyQuery = ''; // Clear input immediately
-                    
                     this.loadingCompany = true;
+                    this.companyResponse = null;
                     
                     try {
                         const response = await axios.post(`${this.apiUrl}/companies/${this.selectedCompany}/ask`, {
-                            question: userMessage.content
+                            question: this.companyQuery
                         });
                         
-                        const assistantMessage = {
-                            role: 'assistant',
-                            content: response.data.answer || 'No answer provided.',
-                            renderedContent: '', // Will be filled by typewriter effect
-                            company: this.selectedCompany,
-                            model_used: response.data.model_used,
-                            sources: (response.data.sources || []).map(s => ({ ...s, expanded: false }))
-                        };
-                        this.companyMessages.push(assistantMessage);
-                        await this.typeMessage(assistantMessage); // Simulate typing
-                        
+                        this.companyResponse = response.data;
                     } catch (error) {
-                        let errorMessageText = 'Failed to get response';
                         if (error.response?.status === 429) {
-                            errorMessageText = 'Rate limit reached. Please wait a moment and try again.';
+                            this.showError('Rate limit reached. Please wait a moment and try again.');
                         } else if (error.response?.status === 404) {
-                            errorMessageText = 'Knowledge base not found. Please upload PDFs and click Relearn.';
+                            this.showError('Knowledge base not found. Please upload PDFs and click Relearn.');
                         } else {
-                            errorMessageText = error.response?.data?.error || errorMessageText;
+                            this.showError(error.response?.data?.error || 'Failed to get response');
                         }
-                        const errorMessageObj = {
-                            role: 'assistant',
-                            content: `Error: ${errorMessageText}`,
-                            renderedContent: marked.parse(`Error: ${errorMessageText}`),
-                            company: this.selectedCompany,
-                            error: true
-                        };
-                        this.companyMessages.push(errorMessageObj);
-                        this.showError(errorMessageText);
                     } finally {
                         this.loadingCompany = false;
-                        this.$nextTick(() => {
-                            // Scroll to bottom of chat
-                            const chatContainer = this.$el.querySelector('.chat-container');
-                            if (chatContainer) {
-                                chatContainer.scrollTop = chatContainer.scrollHeight;
-                            }
-                        });
                     }
                 },
                 
                 async askAllCompanies() {
                     if (!this.generalQuery) return;
                     
-                    const userMessage = { 
-                        role: 'user', 
-                        content: this.generalQuery, 
-                        renderedContent: marked.parse(this.generalQuery || '')
-                    };
-                    this.generalMessages.push(userMessage);
-                    this.generalQuery = ''; // Clear input immediately
-                    
                     this.loadingGeneral = true;
+                    this.generalResponses = [];
                     
                     try {
                         const response = await axios.post(`${this.apiUrl}/ask-all`, {
-                            question: userMessage.content
+                            question: this.generalQuery
                         });
                         
-                        const responsesData = response.data.responses || [];
-                        for (const res of responsesData) {
-                            const assistantMessage = {
-                                role: 'assistant',
-                                content: res.answer || 'No answer provided.',
-                                renderedContent: '', // Will be filled by typewriter effect
-                                company: res.company,
-                                model_used: res.model_used,
-                                sources: (res.sources || []).map(s => ({ ...s, expanded: false })),
-                                success: res.success,
-                                error: res.error
-                            };
-                            this.generalMessages.push(assistantMessage);
-                            await this.typeMessage(assistantMessage); // Simulate typing for each company's response
-                        }
-
+                        this.generalResponses = response.data.responses;
                     } catch (error) {
-                        const errorMessageText = error.response?.data?.error || 'Failed to get responses from all companies';
-                        const errorMessageObj = {
-                            role: 'assistant',
-                            content: `Error: ${errorMessageText}`,
-                            renderedContent: marked.parse(`Error: ${errorMessageText}`),
-                            error: true
-                        };
-                        this.generalMessages.push(errorMessageObj);
-                        this.showError(errorMessageText);
+                        this.showError(error.response?.data?.error || 'Failed to get responses');
                     } finally {
                         this.loadingGeneral = false;
-                        this.$nextTick(() => {
-                            // Scroll to bottom of chat
-                            const chatContainer = this.$el.querySelector('.chat-container');
-                            if (chatContainer) {
-                                chatContainer.scrollTop = chatContainer.scrollHeight;
-                            }
-                        });
                     }
                 },
                 
@@ -1883,15 +1714,6 @@
                     if (newView === 'resources' && this.serverOnline) {
                         this.loadResources();
                     }
-                },
-                selectedCompany() {
-                    // When selectedCompany changes, ensure the chat view scrolls to bottom
-                    this.$nextTick(() => {
-                        const chatContainer = this.$el.querySelector('.chat-container');
-                        if (chatContainer) {
-                            chatContainer.scrollTop = chatContainer.scrollHeight;
-                        }
-                    });
                 }
             },
             
