@@ -18,423 +18,610 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #f8fafc;
-            color: #1f2937;
+            color: #334155;
             line-height: 1.6;
         }
 
-        /* Grok-style Header */
-        .grok-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 16px 24px;
+        .app-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
+            min-height: 100vh;
+            background: #ffffff;
         }
 
-        .grok-logo {
+        /* Sidebar Styles */
+        .sidebar {
+            width: 340px;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            padding: 0;
+            overflow-y: auto;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #ffffff;
+        }
+
+        .logo-section {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 24px;
-            font-weight: 700;
-            color: #111827;
+            margin-bottom: 8px;
         }
 
-        .grok-logo-icon {
+        .logo-icon {
             width: 32px;
             height: 32px;
-            background: #111827;
-            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
+            color: white;
             font-weight: 600;
-            font-size: 16px;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .header-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #111827;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .header-icon:hover {
-            background: #f3f4f6;
-        }
-
-        .header-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 500;
             font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
         }
 
-        .header-btn.signup {
-            background: #111827;
-            color: #ffffff;
-        }
-
-        .header-btn.signin {
-            background: #ffffff;
-            color: #111827;
-            border: 1px solid #d1d5db;
-        }
-
-        .header-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Main Container */
-        .main-container {
-            min-height: 100vh;
-            padding-top: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: #f8fafc;
-        }
-
-        /* Grok Branding */
-        .grok-branding {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .grok-brand-logo {
-            width: 80px;
-            height: 80px;
-            background: #111827;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
+        .app-title {
+            font-size: 20px;
             font-weight: 700;
-            font-size: 32px;
-            margin: 0 auto 24px;
-        }
-
-        .grok-brand-name {
-            font-size: 48px;
-            font-weight: 700;
-            color: #111827;
+            color: #0f172a;
             letter-spacing: -0.025em;
         }
 
-        /* Main Input Field */
-        .main-input-container {
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 32px;
+        .app-subtitle {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 400;
         }
 
-        .main-input-field {
-            width: 100%;
-            background: #f3f4f6;
-            border: 2px solid transparent;
-            border-radius: 16px;
-            padding: 20px 24px;
-            font-size: 16px;
-            color: #111827;
-            transition: all 0.2s ease;
-            resize: none;
-            min-height: 60px;
+        .sidebar-content {
+            padding: 24px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 8px;
         }
 
-        .main-input-field:focus {
-            outline: none;
-            border-color: #111827;
+        .company-item {
             background: #ffffff;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .main-input-field::placeholder {
-            color: #9ca3af;
-        }
-
-        .input-icons {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 0 0 12px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .input-icon {
-            width: 24px;
-            height: 24px;
-            color: #6b7280;
-            cursor: pointer;
-            transition: color 0.2s ease;
+        .company-item:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
-        .input-icon:hover {
-            color: #111827;
+        .company-item.selected {
+            border-color: #6366f1;
+            background: #f8faff;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
-        .send-button {
+        .company-logo {
             width: 40px;
             height: 40px;
-            background: #111827;
-            border: none;
-            border-radius: 50%;
-            color: #ffffff;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #f1f5f9;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            font-size: 16px;
+            color: #64748b;
         }
 
-        .send-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        .company-info {
+            flex: 1;
+            min-width: 0;
         }
 
-        /* Mode Selector */
-        .mode-selector {
+        .company-name {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .company-stats {
+            font-size: 12px;
+            color: #64748b;
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: #f3f4f6;
+            gap: 12px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .status-ready {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-setup {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Admin Section */
+        .admin-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .admin-controls {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .admin-badge {
+            background: #dcfce7;
+            color: #166534;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 6px 12px;
             border-radius: 20px;
-            padding: 8px 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .form-section {
+            margin-bottom: 24px;
+        }
+
+        .form-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .danger-zone {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            background: #f8fafc;
+            overflow-y: auto;
+        }
+
+        .main-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 32px 40px;
+        }
+
+        .main-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+            letter-spacing: -0.025em;
+        }
+
+        .main-subtitle {
+            font-size: 16px;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 40px;
+            display: flex;
+            gap: 0;
+        }
+
+        .tab-button {
+            padding: 16px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            color: #64748b;
+            position: relative;
+            transition: all 0.2s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-button:hover {
+            color: #0f172a;
+            background: #f8fafc;
+        }
+
+        .tab-button.active {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
+            background: #ffffff;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 40px;
+        }
+
+        .content-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-content {
+            padding: 32px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-control:disabled {
+            background: #f9fafb;
+            color: #9ca3af;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 500;
-            color: #111827;
             cursor: pointer;
             transition: all 0.2s ease;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: #ffffff;
+            border-color: #6366f1;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #5855eb;
+            border-color: #5855eb;
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: #374151;
+            border-color: #d1d5db;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #059669;
+            border-color: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #dc2626;
+            border-color: #dc2626;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Question Interface */
+        .question-interface {
             margin-bottom: 32px;
         }
 
-        .mode-selector:hover {
-            background: #e5e7eb;
-        }
-
-        .mode-icon {
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 48px;
-        }
-
-        .action-btn {
-            background: #f3f4f6;
-            border: none;
-            border-radius: 12px;
-            padding: 16px 20px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #111827;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-width: 120px;
-            justify-content: center;
-        }
-
-        .action-btn:hover {
-            background: #e5e7eb;
-            transform: translateY(-1px);
-        }
-
-        .action-btn i {
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            color: #9ca3af;
-            font-size: 12px;
-            margin-top: auto;
-            padding: 24px;
-        }
-
-        .footer a {
-            color: #6b7280;
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            color: #111827;
-        }
-
-        /* Chat Interface (Hidden by default) */
-        .chat-interface {
-            display: none;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-
-        .chat-interface.active {
-            display: block;
-        }
-
-        /* Chat Messages */
-        .chat-messages {
-            margin-bottom: 24px;
-        }
-
-        .message {
-            margin-bottom: 24px;
-            display: flex;
-            gap: 12px;
-        }
-
-        .message.user {
-            justify-content: flex-end;
-        }
-
-        .message-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .message.user .message-avatar {
-            background: #111827;
-            color: #ffffff;
-        }
-
-        .message.assistant .message-avatar {
-            background: #f3f4f6;
-            color: #111827;
-        }
-
-        .message-content {
-            max-width: 70%;
-            padding: 16px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .message.user .message-content {
-            background: #111827;
-            color: #ffffff;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message.assistant .message-content {
-            background: #ffffff;
-            color: #111827;
-            border: 1px solid #e5e7eb;
-            border-bottom-left-radius: 4px;
-        }
-
-        /* Response Actions */
-        .response-actions {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-top: 12px;
-            padding-left: 44px;
-        }
-
-        .action-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6b7280;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .action-icon:hover {
-            background: #f3f4f6;
-            color: #111827;
-        }
-
-        .response-time {
-            font-size: 12px;
-            color: #9ca3af;
-        }
-
-        /* Chat Input */
-        .chat-input {
+        .question-input {
             display: flex;
             gap: 12px;
             align-items: flex-end;
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 24px;
-            padding: 12px 20px;
         }
 
-        .chat-input input {
+        .question-input input {
             flex: 1;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            background: transparent;
         }
 
-        .chat-input input::placeholder {
-            color: #9ca3af;
+        /* Response Styles */
+        .response-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 0;
+            margin-bottom: 24px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.4s ease-out;
         }
 
-        .chat-send-btn {
-            width: 32px;
-            height: 32px;
-            background: #111827;
-            border: none;
-            border-radius: 50%;
-            color: #ffffff;
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .response-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
+            gap: 12px;
+            padding: 20px 24px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .response-company {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 16px;
+        }
+
+        .response-model {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .response-body {
+            padding: 24px;
+        }
+
+        .response-content {
+            color: #1f2937;
+            line-height: 1.8;
+            font-size: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            letter-spacing: 0.01em;
+        }
+
+        .response-content p {
+            margin-bottom: 18px;
+        }
+
+        .response-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .response-content strong {
+            font-weight: 600;
+            color: #111827;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .response-content ul, .response-content ol {
+            margin: 20px 0;
+            padding-left: 28px;
+        }
+
+        .response-content li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .response-content h3 {
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: #111827;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .response-content h4 {
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: #111827;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* Typewriter Animation */
+        .typewriter-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .typewriter-text {
+            opacity: 0;
+            animation: fadeInTypewriter 1.3s ease-in forwards;
+        }
+
+        .typewriter-text.typing {
+            opacity: 1;
+        }
+
+        .typewriter-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: #6366f1;
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes fadeInTypewriter {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Smooth text appearance */
+        .response-content {
+            transition: all 0.3s ease;
+        }
+
+        .sources-section {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .sources-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sources-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: #6366f1;
+            border-radius: 2px;
+        }
+
+        .source-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
             transition: all 0.2s ease;
         }
 
-        .chat-send-btn:hover {
-            transform: scale(1.05);
+        .source-item:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .source-content {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 16px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            line-height: 1.5;
         }
 
         /* Loading States */
@@ -443,14 +630,14 @@
             align-items: center;
             justify-content: center;
             padding: 48px;
-            color: #6b7280;
+            color: #64748b;
         }
 
         .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #e5e7eb;
-            border-top: 2px solid #111827;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #e2e8f0;
+            border-top: 2px solid #6366f1;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-right: 12px;
@@ -461,185 +648,810 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Alert Styles */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .alert-warning {
+            background: #fffbeb;
+            border: 1px solid #fed7aa;
+            color: #92400e;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 64px 32px;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            color: #cbd5e1;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* Resource Grid */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .resource-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .resource-header {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .company-logo-large {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #64748b;
+        }
+
+        .resource-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .resource-info p {
+            font-size: 13px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .resource-body {
+            padding: 20px;
+        }
+
+        .pdf-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .pdf-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .pdf-name {
+            font-weight: 500;
+            color: #0f172a;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .pdf-size {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 0;
+            max-width: 480px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .modal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #64748b;
+            padding: 4px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: #e2e8f0;
+            color: #374151;
+        }
+
+        .modal-body {
+            padding: 32px;
+        }
+
+        .modal-footer {
+            padding: 24px 32px;
+            border-top: 1px solid #e2e8f0;
+            background: #f8fafc;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Toast Messages */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1001;
+            max-width: 400px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .toast-success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast-error {
+            border-left: 4px solid #ef4444;
+        }
+
+        /* Server Status */
+        .server-status {
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .server-online {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .server-offline {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
         /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 280px;
+            }
+            
+            .content-area {
+                padding: 24px;
+            }
+            
+            .main-header {
+                padding: 24px;
+            }
+            
+            .nav-tabs {
+                padding: 0 24px;
+            }
+        }
+
         @media (max-width: 768px) {
-            .grok-header {
-                padding: 12px 16px;
+            .app-container {
+                flex-direction: column;
             }
 
-            .grok-brand-name {
-                font-size: 36px;
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 50vh;
             }
 
-            .main-input-container {
-                max-width: 90%;
+            .nav-tabs {
+                flex-wrap: wrap;
+                gap: 0;
             }
 
-            .action-buttons {
-                gap: 8px;
+            .tab-button {
+                flex: 1;
+                min-width: 0;
+                text-align: center;
             }
 
-            .action-btn {
-                min-width: 100px;
-                padding: 12px 16px;
-                font-size: 13px;
+            .question-input {
+                flex-direction: column;
+                gap: 12px;
             }
 
-            .chat-interface {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content-area {
                 padding: 16px;
             }
 
-            .message-content {
-                max-width: 85%;
+            .card-content {
+                padding: 20px;
             }
         }
 
         /* Utility Classes */
-        .hidden { display: none; }
+        .w-full { width: 100%; }
         .flex { display: flex; }
         .items-center { align-items: center; }
-        .justify-center { justify-content: center; }
-        .text-center { text-align: center; }
-        .w-full { width: 100%; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 8px; }
+        .gap-3 { gap: 12px; }
+        .gap-4 { gap: 16px; }
         .mb-4 { margin-bottom: 16px; }
         .mb-6 { margin-bottom: 24px; }
+        .text-sm { font-size: 14px; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .text-gray-500 { color: #64748b; }
+        .text-gray-700 { color: #374151; }
+        .text-gray-900 { color: #0f172a; }
     </style>
 </head>
 <body>
     <div id="app">
-        <!-- Grok-style Header -->
-        <div class="grok-header">
-            <div class="grok-logo">
-                <div class="grok-logo-icon">B</div>
-                <span>Broker-gpt</span>
-            </div>
-            
-            <div class="header-actions">
-                <div class="header-icon" @click="toggleChatView">
-                    <i class="fas fa-comments"></i>
-                </div>
-                <div class="header-icon" @click="toggleSettings">
-                    <i class="fas fa-cog"></i>
-                </div>
-                <div class="header-icon" @click="toggleProfile">
-                    <i class="fas fa-user"></i>
-                </div>
-                <button class="header-btn signup" @click="showAdminLogin = true">Sign up</button>
-                <button class="header-btn signin" @click="showAdminLogin = true">Sign in</button>
-            </div>
-        </div>
-
-        <!-- Main Container -->
-        <div class="main-container">
-            <!-- Grok Branding -->
-            <div class="grok-branding">
-                <div class="grok-brand-logo">B</div>
-                <div class="grok-brand-name">Broker-gpt</div>
-            </div>
-
-            <!-- Main Input Field -->
-            <div class="main-input-container">
-                <div class="main-input-field">
-                    <div class="input-icons">
-                        <i class="fas fa-microphone input-icon"></i>
-                        <i class="fas fa-paperclip input-icon"></i>
-                    </div>
-                    <input 
-                        v-model="mainQuery" 
-                        type="text" 
-                        placeholder="What do you want to know?"
-                        @keyup.enter="handleMainQuery"
-                        style="flex: 1; border: none; outline: none; background: transparent; font-size: 16px;"
-                    >
-                    <button class="send-button" @click="handleMainQuery" :disabled="!mainQuery">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Mode Selector -->
-            <div class="mode-selector" @click="toggleMode">
-                <i class="fas fa-bolt mode-icon"></i>
-                <span>{{ currentMode }}</span>
-                <i class="fas fa-chevron-down mode-icon"></i>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button class="action-btn" @click="showCreateImages">
-                    <i class="fas fa-images"></i>
-                    Create Images
-                </button>
-                <button class="action-btn" @click="showResearch">
-                    <i class="fas fa-search"></i>
-                    Research
-                </button>
-                <button class="action-btn" @click="showEditImage">
-                    <i class="fas fa-edit"></i>
-                    Edit Image
-                </button>
-                <button class="action-btn" @click="showLatestNews">
-                    <i class="fas fa-newspaper"></i>
-                    Latest News
-                </button>
-                <button class="action-btn" @click="showPersonas">
-                    <i class="fas fa-users"></i>
-                    Personas
-                </button>
-            </div>
-
-            <!-- Footer -->
-            <div class="footer">
-                By messaging Broker-gpt, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
-            </div>
-        </div>
-
-        <!-- Chat Interface (Hidden by default) -->
-        <div class="chat-interface" :class="{ active: showChat }">
-            <div class="chat-messages">
-                <div v-for="(message, index) in chatMessages" :key="index" 
-                     class="message" :class="message.type">
-                    <div class="message-avatar">
-                        {{ message.type === 'user' ? 'U' : 'B' }}
-                    </div>
-                    <div class="message-content">
-                        {{ message.content }}
+        <div class="app-container">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <div class="logo-section">
+                        <div class="logo-icon">BI</div>
+                        <div>
+                            <div class="app-title">Broker-gpt</div>
+                            <div class="app-subtitle">Insurance Assistant</div>
+                        </div>
                     </div>
                 </div>
                 
-                <div v-if="message.type === 'assistant'" class="response-actions">
-                    <div class="action-icon">
-                        <i class="fas fa-redo"></i>
+                <div class="sidebar-content">
+                    <!-- Server Status -->
+                    <div class="server-status" :class="{ 'server-online': serverOnline, 'server-offline': !serverOnline }">
+                        <i class="fas" :class="serverOnline ? 'fa-check-circle' : 'fa-times-circle'"></i>
+                        <span>{{ serverOnline ? 'Server Connected' : 'Server Offline - Start backend server' }}</span>
                     </div>
-                    <div class="action-icon">
-                        <i class="fas fa-download"></i>
+                    
+                    <!-- Company Selection -->
+                    <div class="section-title">
+                        <i class="fas fa-building"></i>
+                        Companies
                     </div>
-                    <div class="action-icon">
-                        <i class="fas fa-thumbs-up"></i>
+                    
+                    <div v-if="!serverOnline" class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Start the Flask backend server to load companies</span>
                     </div>
-                    <div class="action-icon">
-                        <i class="fas fa-thumbs-down"></i>
+                    
+                    <div v-else-if="companies.length === 0" class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>No companies yet. Use admin access to add companies.</span>
                     </div>
-                    <div class="action-icon">
-                        <i class="fas fa-ellipsis-h"></i>
+                    
+                    <div v-for="company in companies" :key="company.name" 
+                         class="company-item" 
+                         :class="{ selected: selectedCompany === company.name }"
+                         @click="selectCompany(company.name)">
+                        <img v-if="company.has_logo" 
+                             :src="`${apiUrl}/companies/${company.name}/logo`" 
+                             :alt="company.name" 
+                             class="company-logo">
+                        <div v-else class="company-logo">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="company-info">
+                            <div class="company-name">{{ company.name }}</div>
+                            <div class="company-stats">
+                                <span>{{ company.pdf_count }} PDFs</span>
+                                <span class="status-badge" :class="company.has_vectorstore ? 'status-ready' : 'status-setup'">
+                                    <i class="fas" :class="company.has_vectorstore ? 'fa-check' : 'fa-clock'"></i>
+                                    {{ company.has_vectorstore ? 'Ready' : 'Setup' }}
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="response-time">772ms</div>
+                    
+                    <!-- Admin Section -->
+                    <div class="admin-section">
+                        <div class="section-title">
+                            <i class="fas fa-cog"></i>
+                            Administration
+                        </div>
+                        
+                        <button class="btn btn-secondary w-full" @click="showAdminLogin = true" v-if="!isAdminAuthenticated && serverOnline">
+                            <i class="fas fa-lock"></i>
+                            Admin Access
+                        </button>
+                        
+                        <div v-if="!serverOnline" class="alert alert-warning">
+                            <i class="fas fa-server"></i>
+                            <span>Admin access requires server connection</span>
+                        </div>
+                        
+                        <div v-if="isAdminAuthenticated" class="admin-controls">
+                            <div class="admin-badge">
+                                <i class="fas fa-shield-alt"></i>
+                                Admin Mode
+                            </div>
+                            
+                            <!-- Add New Company -->
+                            <div class="form-section">
+                                <div class="form-section-title">Add New Company</div>
+                                <div class="form-group">
+                                    <label class="form-label">Company Name</label>
+                                    <input v-model="newCompanyName" class="form-control" placeholder="Enter company name" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Company Logo</label>
+                                    <input type="file" @change="onLogoSelect" accept="image/*" class="form-control" />
+                                </div>
+                                <button class="btn btn-primary w-full" @click="addCompany" :disabled="!newCompanyName">
+                                    <i class="fas fa-plus"></i>
+                                    Add Company
+                                </button>
+                            </div>
+                            
+                            <!-- Company-specific admin controls -->
+                            <div v-if="selectedCompany">
+                                <div class="form-section">
+                                    <div class="form-section-title">Upload PDFs</div>
+                                    
+                                    <!-- Current PDFs -->
+                                    <div v-if="currentPdfs.length > 0" class="mb-4">
+                                        <div class="text-sm font-medium text-gray-700 mb-2">Current PDFs:</div>
+                                        <div class="text-sm text-gray-500">
+                                            <div v-for="pdf in currentPdfs" :key="pdf.name" class="mb-1">
+                                                • {{ pdf.name }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- File Upload -->
+                                    <div class="form-group">
+                                        <input type="file" @change="onPdfSelect" accept=".pdf" class="form-control" />
+                                    </div>
+                                    <button class="btn btn-primary w-full mb-4" @click="uploadPdf" :disabled="!selectedPdfFile">
+                                        <i class="fas fa-upload"></i>
+                                        Upload PDF
+                                    </button>
+                                    
+                                    <!-- Admin Actions -->
+                                    <button class="btn btn-success w-full" @click="relearnPdfs" :disabled="relearning">
+                                        <i class="fas" :class="relearning ? 'fa-spinner fa-spin' : 'fa-sync'"></i>
+                                        {{ relearning ? 'Processing...' : 'Relearn PDFs' }}
+                                    </button>
+                                </div>
+                                
+                                <!-- Danger Zone -->
+                                <div class="danger-zone">
+                                    <div class="form-section-title" style="color: #dc2626;">Danger Zone</div>
+                                    <button class="btn btn-danger w-full" @click="showDeleteConfirm = true">
+                                        <i class="fas fa-trash"></i>
+                                        Delete Company Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="chat-input">
-                <input 
-                    v-model="chatQuery" 
-                    type="text" 
-                    placeholder="How can Broker-gpt help?"
-                    @keyup.enter="sendChatMessage"
-                >
-                <button class="chat-send-btn" @click="sendChatMessage" :disabled="!chatQuery">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+            
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="main-header">
+                    <h1 class="main-title">Broker-gpt</h1>
+                    <p class="main-subtitle">Advanced insurance broker assistant powered by AI</p>
+                </div>
+                
+                <!-- Navigation Tabs -->
+                <div class="nav-tabs">
+                    <button class="tab-button" 
+                            :class="{ active: currentView === 'general' }"
+                            @click="currentView = 'general'">
+                        <i class="fas fa-comments"></i>
+                        General Chat
+                    </button>
+                    <button class="tab-button" 
+                            :class="{ active: currentView === 'questions' }"
+                            @click="currentView = 'questions'">
+                        <i class="fas fa-search"></i>
+                        Ask Questions
+                    </button>
+                    <button class="tab-button" 
+                            :class="{ active: currentView === 'resources' }"
+                            @click="currentView = 'resources'">
+                        <i class="fas fa-folder-open"></i>
+                        Resources
+                    </button>
+                </div>
+                
+                <div class="content-area">
+                    <!-- Server Offline Message -->
+                    <div v-if="!serverOnline" class="content-card">
+                        <div class="card-content">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="fas fa-server"></i>
+                                </div>
+                                <div class="empty-state-title">Backend Server Required</div>
+                                <div class="empty-state-text">
+                                    Please start the Flask backend server to use Broker-gpt.<br><br>
+                                    Run: <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-family: monospace;">python backend/app.py</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- General Chat View -->
+                    <div v-else-if="currentView === 'general'" class="content-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-comments"></i>
+                                General Chat
+                            </h2>
+                        </div>
+                        <div class="card-content">
+                            <p class="text-gray-600 mb-6">Ask questions across all companies to get comprehensive insights.</p>
+                            
+                            <div class="question-interface">
+                                <div class="question-input">
+                                    <input v-model="generalQuery" 
+                                           class="form-control" 
+                                           placeholder="Ask a general question across all companies..."
+                                           @keyup.enter="askAllCompanies" />
+                                    <button class="btn btn-primary" @click="askAllCompanies" :disabled="!generalQuery || loadingGeneral">
+                                        <i class="fas" :class="loadingGeneral ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+                                        {{ loadingGeneral ? 'Processing...' : 'Ask All' }}
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div v-if="loadingGeneral" class="loading">
+                                <div class="spinner"></div>
+                                Analyzing responses from all companies...
+                            </div>
+                            
+                            <div v-if="generalResponses.length > 0">
+                                <div v-for="response in generalResponses" :key="response.company" class="response-card">
+                                    <div class="response-header">
+                                        <img v-if="getCompanyLogo(response.company)" 
+                                             :src="getCompanyLogo(response.company)" 
+                                             :alt="response.company" 
+                                             style="width: 32px; height: 32px; border-radius: 8px;">
+                                        <div v-else style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-building" style="color: #64748b;"></i>
+                                        </div>
+                                        <div class="response-company">{{ response.company }}</div>
+                                        <div v-if="response.model_used" class="response-model">{{ response.model_used }}</div>
+                                    </div>
+                                    
+                                    <div class="response-body">
+                                        <div v-if="response.success" class="response-content">
+                                            <div class="typewriter-text" :ref="'typewriter-' + response.company" v-html="formatResponseText(response.answer)"></div>
+                                            <span class="typewriter-cursor" v-if="response.answer"></span>
+                                        </div>
+                                        <div v-else class="alert alert-error">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            <span>{{ response.error }}</span>
+                                        </div>
+                                        
+                                        <div v-if="response.sources && response.sources.length > 0" class="sources-section">
+                                            <div class="sources-title">Source Documents</div>
+                                            <div v-for="(source, index) in response.sources" :key="index" class="source-item">
+                                                <div class="source-content">{{ source.content }}</div>
+                                                <button class="btn btn-secondary btn-sm" 
+                                                        @click="downloadPdf(response.company, getFileName(source.source))">
+                                                    <i class="fas fa-download"></i>
+                                                    Download {{ getFileName(source.source) }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ask Questions View -->
+                    <div v-else-if="currentView === 'questions'" class="content-card">
+                        <div v-if="!selectedCompany" class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                            <div class="empty-state-title">Select a Company</div>
+                            <div class="empty-state-text">Choose a company from the sidebar to start asking questions.</div>
+                        </div>
+                        
+                        <div v-else>
+                            <div class="card-header">
+                                <div class="flex items-center gap-4">
+                                    <img v-if="getCompanyLogo(selectedCompany)" 
+                                         :src="getCompanyLogo(selectedCompany)" 
+                                         :alt="selectedCompany" 
+                                         style="width: 48px; height: 48px; border-radius: 12px;">
+                                    <div v-else style="width: 48px; height: 48px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-building" style="color: #64748b; font-size: 20px;"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="card-title" style="margin: 0;">{{ selectedCompany }}</h2>
+                                        <p style="color: #64748b; margin: 4px 0 0 0; font-size: 14px;">Ask specific questions about this company's policies and guidelines</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-content">
+                                <div v-if="!hasVectorstore" class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Upload PDFs for <strong>{{ selectedCompany }}</strong> and use admin access to click 'Relearn PDFs' to start.</span>
+                                </div>
+                                
+                                <div v-else class="question-interface">
+                                    <div class="question-input">
+                                        <input v-model="companyQuery" 
+                                               class="form-control" 
+                                               placeholder="Ask about underwriting guidelines, policies, or procedures..."
+                                               @keyup.enter="askCompanyQuestion" />
+                                        <button class="btn btn-primary" @click="askCompanyQuestion" :disabled="!companyQuery || loadingCompany">
+                                            <i class="fas" :class="loadingCompany ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+                                            {{ loadingCompany ? 'Processing...' : 'Ask' }}
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div v-if="loadingCompany" class="loading">
+                                    <div class="spinner"></div>
+                                    Broker-gpt is analyzing your question...
+                                </div>
+                                
+                                <div v-if="companyResponse" class="response-card">
+                                    <div class="response-header">
+                                        <img v-if="getCompanyLogo(selectedCompany)" 
+                                             :src="getCompanyLogo(selectedCompany)" 
+                                             :alt="selectedCompany" 
+                                             style="width: 32px; height: 32px; border-radius: 8px;">
+                                        <div v-else style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-building" style="color: #64748b;"></i>
+                                        </div>
+                                        <div class="response-company">{{ selectedCompany }}</div>
+                                        <div v-if="companyResponse.model_used" class="response-model">{{ companyResponse.model_used }}</div>
+                                    </div>
+                                    
+                                    <div class="response-body">
+                                        <div class="mb-6" style="padding: 20px; background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%); border-radius: 16px; border-left: 4px solid #6366f1; box-shadow: 0 2px 4px rgba(99, 102, 241, 0.1);">
+                                            <div class="font-medium text-gray-600 text-sm mb-3" style="text-transform: uppercase; letter-spacing: 0.05em;">Question:</div>
+                                            <div class="text-gray-900 font-semibold text-lg">{{ companyResponse.question }}</div>
+                                        </div>
+                                        
+                                        <div class="response-content">
+                                            <div class="typewriter-text" ref="companyTypewriter" v-html="formatResponseText(companyResponse.answer)"></div>
+                                            <span class="typewriter-cursor" v-if="companyResponse.answer"></span>
+                                        </div>
+                                        
+                                        <div v-if="companyResponse.sources && companyResponse.sources.length > 0" class="sources-section">
+                                            <div class="sources-title">Source Documents</div>
+                                            <div v-for="(source, index) in companyResponse.sources" :key="index" class="source-item">
+                                                <div class="source-content">{{ source.content }}</div>
+                                                <button class="btn btn-secondary btn-sm" 
+                                                        @click="downloadPdf(selectedCompany, getFileName(source.source))">
+                                                    <i class="fas fa-download"></i>
+                                                    Download {{ getFileName(source.source) }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Resources View -->
+                    <div v-else-if="currentView === 'resources'" class="content-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-folder-open"></i>
+                                Resources Library
+                            </h2>
+                        </div>
+                        <div class="card-content">
+                            <div v-if="loadingResources" class="loading">
+                                <div class="spinner"></div>
+                                Loading resource library...
+                            </div>
+                            
+                            <div v-else>
+                                <!-- Summary Statistics -->
+                                <div v-if="resourcesSummary" class="stats-grid">
+                                    <div class="stat-card">
+                                        <div class="stat-number">{{ resourcesSummary.total_companies }}</div>
+                                        <div class="stat-label">Total Companies</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-number">{{ resourcesSummary.total_pdfs }}</div>
+                                        <div class="stat-label">Total Documents</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-number">{{ resourcesSummary.total_size_mb }}</div>
+                                        <div class="stat-label">Total Size (MB)</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Resource Grid -->
+                                <div class="resource-grid">
+                                    <div v-for="resource in allResources" :key="resource.company" class="resource-card">
+                                        <div class="resource-header">
+                                            <img v-if="resource.has_logo" 
+                                                 :src="`${apiUrl}/companies/${resource.company}/logo`" 
+                                                 :alt="resource.company" 
+                                                 class="company-logo-large">
+                                            <div v-else class="company-logo-large">
+                                                <i class="fas fa-building"></i>
+                                            </div>
+                                            <div class="resource-info">
+                                                <h3>{{ resource.company }}</h3>
+                                                <p>{{ resource.pdfs.length }} document(s)</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="resource-body">
+                                            <div v-if="resource.pdfs.length === 0" class="alert alert-info">
+                                                <i class="fas fa-info-circle"></i>
+                                                <span>No documents found for {{ resource.company }}</span>
+                                            </div>
+                                            
+                                            <div v-else>
+                                                <div v-for="pdf in resource.pdfs" :key="pdf.name" class="pdf-item">
+                                                    <div class="pdf-info">
+                                                        <div class="pdf-name">{{ pdf.name }}</div>
+                                                        <div class="pdf-size">{{ pdf.size_mb }} MB</div>
+                                                    </div>
+                                                    <button class="btn btn-primary btn-sm" @click="downloadPdf(resource.company, pdf.name)">
+                                                        <i class="fas fa-download"></i>
+                                                        Download
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
+        
         <!-- Admin Login Modal -->
         <div v-if="showAdminLogin" class="modal-overlay" @click="showAdminLogin = false">
             <div class="modal" @click.stop>
@@ -665,7 +1477,35 @@
                 </div>
             </div>
         </div>
-
+        
+        <!-- Delete Confirmation Modal -->
+        <div v-if="showDeleteConfirm" class="modal-overlay" @click="showDeleteConfirm = false">
+            <div class="modal" @click.stop>
+                <div class="modal-header">
+                    <h3 class="modal-title">Confirm Deletion</h3>
+                    <button class="close-btn" @click="showDeleteConfirm = false">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <div class="font-semibold">This action cannot be undone</div>
+                            <div>Are you sure you want to delete <strong>{{ selectedCompany }}</strong> and all its data?</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @click="showDeleteConfirm = false">Cancel</button>
+                    <button class="btn btn-danger" @click="deleteCompany">
+                        <i class="fas fa-trash"></i>
+                        Delete Company
+                    </button>
+                </div>
+            </div>
+        </div>
+        
         <!-- Toast Messages -->
         <div v-if="successMessage" class="toast toast-success">
             <i class="fas fa-check-circle" style="color: #10b981;"></i>
@@ -684,17 +1524,39 @@
         createApp({
             data() {
                 return {
-                    // UI State
-                    showChat: false,
-                    currentMode: 'Fast',
-                    mainQuery: '',
-                    chatQuery: '',
-                    chatMessages: [],
+                    // State
+                    companies: [],
+                    selectedCompany: null,
+                    currentView: 'general',
+                    serverOnline: false,
                     
                     // Admin
+                    isAdminAuthenticated: false,
                     showAdminLogin: false,
                     adminPassword: '',
-                    isAdminAuthenticated: false,
+                    newCompanyName: '',
+                    selectedLogoFile: null,
+                    
+                    // PDF Management
+                    currentPdfs: [],
+                    selectedPdfFile: null,
+                    relearning: false,
+                    
+                    // Questions
+                    generalQuery: '',
+                    companyQuery: '',
+                    generalResponses: [],
+                    companyResponse: null,
+                    loadingGeneral: false,
+                    loadingCompany: false,
+                    
+                    // Resources
+                    allResources: [],
+                    resourcesSummary: null,
+                    loadingResources: false,
+                    
+                    // Modals
+                    showDeleteConfirm: false,
                     
                     // Messages
                     successMessage: '',
@@ -705,104 +1567,155 @@
                 }
             },
             
+            computed: {
+                hasVectorstore() {
+                    if (!this.selectedCompany) return false;
+                    const company = this.companies.find(c => c.name === this.selectedCompany);
+                    return company ? company.has_vectorstore : false;
+                }
+            },
+            
             methods: {
-                // UI Methods
-                toggleChatView() {
-                    this.showChat = !this.showChat;
-                },
-                
-                toggleSettings() {
-                    // Placeholder for settings functionality
-                    this.showSuccess('Settings coming soon!');
-                },
-                
-                toggleProfile() {
-                    // Placeholder for profile functionality
-                    this.showSuccess('Profile coming soon!');
-                },
-                
-                toggleMode() {
-                    const modes = ['Fast', 'Balanced', 'Creative'];
-                    const currentIndex = modes.indexOf(this.currentMode);
-                    this.currentMode = modes[(currentIndex + 1) % modes.length];
-                },
-                
-                handleMainQuery() {
-                    if (!this.mainQuery.trim()) return;
-                    
-                    // Add user message to chat
-                    this.chatMessages.push({
-                        type: 'user',
-                        content: this.mainQuery
-                    });
-                    
-                    // Show chat interface
-                    this.showChat = true;
-                    
-                    // Simulate AI response (replace with actual API call)
-                    setTimeout(() => {
-                        this.chatMessages.push({
-                            type: 'assistant',
-                            content: `I'm here to help you with insurance-related questions! You asked: "${this.mainQuery}". How can I assist you further?`
-                        });
-                    }, 1000);
-                    
-                    this.mainQuery = '';
-                },
-                
-                sendChatMessage() {
-                    if (!this.chatQuery.trim()) return;
-                    
-                    this.chatMessages.push({
-                        type: 'user',
-                        content: this.chatQuery
-                    });
-                    
-                    // Simulate AI response (replace with actual API call)
-                    setTimeout(() => {
-                        this.chatMessages.push({
-                            type: 'assistant',
-                            content: `Thank you for your message: "${this.chatQuery}". I'm here to help with your insurance needs!`
-                        });
-                    }, 1000);
-                    
-                    this.chatQuery = '';
-                },
-                
-                // Action Button Methods
-                showCreateImages() {
-                    this.showSuccess('Create Images feature coming soon!');
-                },
-                
-                showResearch() {
-                    this.showSuccess('Research feature coming soon!');
-                },
-                
-                showEditImage() {
-                    this.showSuccess('Edit Image feature coming soon!');
-                },
-                
-                showLatestNews() {
-                    this.showSuccess('Latest News feature coming soon!');
-                },
-                
-                showPersonas() {
-                    this.showSuccess('Personas feature coming soon!');
-                },
-                
                 // Utility Methods
                 showSuccess(message) {
                     this.successMessage = message;
                     setTimeout(() => {
                         this.successMessage = '';
-                    }, 3000);
+                    }, 5000);
                 },
                 
                 showError(message) {
                     this.errorMessage = message;
                     setTimeout(() => {
                         this.errorMessage = '';
-                    }, 5000);
+                    }, 8000);
+                },
+                
+                getCompanyLogo(companyName) {
+                    const company = this.companies.find(c => c.name === companyName);
+                    return company && company.has_logo ? `${this.apiUrl}/companies/${companyName}/logo` : null;
+                },
+                
+                getFileName(fullPath) {
+                    return fullPath.split('/').pop().split('\\').pop();
+                },
+                
+                formatResponseText(text) {
+                    if (!text) return '';
+                    
+                    // Convert markdown-style formatting to HTML
+                    let formatted = text
+                        // Bold text (**text**)
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        // Italic text (*text*)
+                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                        // Headers (# Header)
+                        .replace(/^# (.*$)/gm, '<h3 style="font-size: 18px; font-weight: 600; color: #111827; margin: 24px 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #e5e7eb;">$1</h3>')
+                        .replace(/^## (.*$)/gm, '<h4 style="font-size: 16px; font-weight: 600; color: #111827; margin: 20px 0 12px 0;">$1</h4>')
+                        // Lists
+                        .replace(/^\* (.*$)/gm, '<li>$1</li>')
+                        .replace(/^- (.*$)/gm, '<li>$1</li>')
+                        // Convert consecutive list items to proper lists
+                        .replace(/(<li>.*<\/li>)/gs, '<ul style="margin: 16px 0; padding-left: 24px;">$1</ul>')
+                        // Line breaks
+                        .replace(/\n/g, '<br>');
+                    
+                    return formatted;
+                },
+                
+                animateTypewriter(element, text, speed = 30) {
+                    if (!element || !text) return;
+                    
+                    element.innerHTML = '';
+                    element.style.opacity = '1';
+                    
+                    let index = 0;
+                    const typeNextChar = () => {
+                        if (index < text.length) {
+                            element.innerHTML += text[index];
+                            index++;
+                            setTimeout(typeNextChar, speed);
+                        } else {
+                            // Add blinking cursor at the end
+                            element.innerHTML += '<span class="typewriter-cursor"></span>';
+                        }
+                    };
+                    
+                    typeNextChar();
+                },
+                
+                // Server Connection Check
+                async checkServerConnection() {
+                    try {
+                        const response = await axios.get(`${this.apiUrl}/companies`, { timeout: 3000 });
+                        this.serverOnline = true;
+                        return true;
+                    } catch (error) {
+                        this.serverOnline = false;
+                        return false;
+                    }
+                },
+                
+                // Company Management
+                async loadCompanies() {
+                    if (!this.serverOnline) return;
+                    
+                    try {
+                        const response = await axios.get(`${this.apiUrl}/companies`);
+                        this.companies = response.data.companies || [];
+                    } catch (error) {
+                        console.error('Error loading companies:', error);
+                        if (error.code === 'ERR_NETWORK' || error.code === 'ECONNREFUSED') {
+                            this.serverOnline = false;
+                        }
+                    }
+                },
+                
+                selectCompany(companyName) {
+                    this.selectedCompany = companyName;
+                    this.companyResponse = null;
+                    this.companyQuery = '';
+                    this.loadCurrentPdfs();
+                },
+                
+                async addCompany() {
+                    if (!this.newCompanyName) {
+                        this.showError('Company name is required');
+                        return;
+                    }
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('company_name', this.newCompanyName);
+                        if (this.selectedLogoFile) {
+                            formData.append('logo', this.selectedLogoFile);
+                        }
+                        
+                        const response = await axios.post(`${this.apiUrl}/companies`, formData, {
+                            headers: { 'Content-Type': 'multipart/form-data' }
+                        });
+                        
+                        this.showSuccess(response.data.message);
+                        this.newCompanyName = '';
+                        this.selectedLogoFile = null;
+                        this.loadCompanies();
+                    } catch (error) {
+                        this.showError(error.response?.data?.error || 'Failed to add company');
+                    }
+                },
+                
+                async deleteCompany() {
+                    if (!this.selectedCompany) return;
+                    
+                    try {
+                        const response = await axios.delete(`${this.apiUrl}/companies/${this.selectedCompany}`);
+                        this.showSuccess(response.data.message);
+                        this.selectedCompany = null;
+                        this.showDeleteConfirm = false;
+                        this.loadCompanies();
+                    } catch (error) {
+                        this.showError(error.response?.data?.error || 'Failed to delete company');
+                    }
                 },
                 
                 // Admin Authentication
@@ -830,7 +1743,178 @@
                             this.showError('Authentication failed');
                         }
                     }
+                },
+                
+                // PDF Management
+                async loadCurrentPdfs() {
+                    if (!this.selectedCompany || !this.serverOnline) return;
+                    
+                    try {
+                        const response = await axios.get(`${this.apiUrl}/companies/${this.selectedCompany}/pdfs`);
+                        this.currentPdfs = response.data.pdfs;
+                    } catch (error) {
+                        console.error('Error loading PDFs:', error);
+                    }
+                },
+                
+                onLogoSelect(event) {
+                    this.selectedLogoFile = event.target.files[0];
+                },
+                
+                onPdfSelect(event) {
+                    this.selectedPdfFile = event.target.files[0];
+                },
+                
+                async uploadPdf() {
+                    if (!this.selectedPdfFile || !this.selectedCompany) {
+                        this.showError('Please select a PDF file');
+                        return;
+                    }
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('pdf', this.selectedPdfFile);
+                        
+                        const response = await axios.post(`${this.apiUrl}/companies/${this.selectedCompany}/pdfs`, formData, {
+                            headers: { 'Content-Type': 'multipart/form-data' }
+                        });
+                        
+                        this.showSuccess(response.data.message);
+                        this.selectedPdfFile = null;
+                        this.loadCurrentPdfs();
+                        this.loadCompanies(); // Refresh company stats
+                    } catch (error) {
+                        this.showError(error.response?.data?.error || 'Failed to upload PDF');
+                    }
+                },
+                
+                async relearnPdfs() {
+                    if (!this.selectedCompany) return;
+                    
+                    this.relearning = true;
+                    try {
+                        const response = await axios.post(`${this.apiUrl}/companies/${this.selectedCompany}/relearn`);
+                        this.showSuccess(response.data.message);
+                        this.loadCompanies(); // Refresh company stats
+                    } catch (error) {
+                        this.showError(error.response?.data?.error || 'Failed to rebuild knowledge base');
+                    } finally {
+                        this.relearning = false;
+                    }
+                },
+                
+                async downloadPdf(companyName, pdfName) {
+                    try {
+                        const response = await axios.get(`${this.apiUrl}/companies/${companyName}/pdfs/${pdfName}`, {
+                            responseType: 'blob'
+                        });
+                        
+                        // Create download link
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', pdfName);
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+                        window.URL.revokeObjectURL(url);
+                    } catch (error) {
+                        this.showError('Failed to download PDF');
+                    }
+                },
+                
+                // Question Management
+                async askCompanyQuestion() {
+                    if (!this.companyQuery || !this.selectedCompany) return;
+                    
+                    this.loadingCompany = true;
+                    this.companyResponse = null;
+                    
+                    try {
+                        const response = await axios.post(`${this.apiUrl}/companies/${this.selectedCompany}/ask`, {
+                            question: this.companyQuery
+                        });
+                        
+                        this.companyResponse = response.data;
+                    } catch (error) {
+                        if (error.response?.status === 429) {
+                            this.showError('Rate limit reached. Please wait a moment and try again.');
+                        } else if (error.response?.status === 404) {
+                            this.showError('Knowledge base not found. Please upload PDFs and click Relearn.');
+                        } else {
+                            this.showError(error.response?.data?.error || 'Failed to get response');
+                        }
+                    } finally {
+                        this.loadingCompany = false;
+                    }
+                },
+                
+                async askAllCompanies() {
+                    if (!this.generalQuery) return;
+                    
+                    this.loadingGeneral = true;
+                    this.generalResponses = [];
+                    
+                    try {
+                        const response = await axios.post(`${this.apiUrl}/ask-all`, {
+                            question: this.generalQuery
+                        });
+                        
+                        this.generalResponses = response.data.responses;
+                    } catch (error) {
+                        this.showError(error.response?.data?.error || 'Failed to get responses');
+                    } finally {
+                        this.loadingGeneral = false;
+                    }
+                },
+                
+                // Resources
+                async loadResources() {
+                    this.loadingResources = true;
+                    
+                    try {
+                        const response = await axios.get(`${this.apiUrl}/resources`);
+                        this.allResources = response.data.resources;
+                        this.resourcesSummary = response.data.summary;
+                    } catch (error) {
+                        this.showError('Failed to load resources');
+                    } finally {
+                        this.loadingResources = false;
+                    }
                 }
+            },
+            
+            watch: {
+                currentView(newView) {
+                    if (newView === 'resources' && this.serverOnline) {
+                        this.loadResources();
+                    }
+                }
+            },
+            
+            async mounted() {
+                // Check server connection first
+                await this.checkServerConnection();
+                
+                if (this.serverOnline) {
+                    await this.loadCompanies();
+                    
+                    // Load resources if starting on resources view
+                    if (this.currentView === 'resources') {
+                        this.loadResources();
+                    }
+                }
+                
+                // Check server status periodically
+                setInterval(async () => {
+                    const wasOnline = this.serverOnline;
+                    await this.checkServerConnection();
+                    
+                    // If server came back online, reload companies
+                    if (!wasOnline && this.serverOnline) {
+                        this.loadCompanies();
+                    }
+                }, 10000); // Check every 10 seconds
             }
         }).mount('#app');
     </script>
