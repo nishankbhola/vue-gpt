@@ -27,6 +27,9 @@ load_dotenv()
 app = Flask(__name__, static_folder='static', static_url_path='')
 CORS(app)
 
+# Add file upload size limit (500MB)
+app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB in bytes
+
 # Configuration
 UPLOAD_FOLDER = 'data/pdfs'
 LOGOS_FOLDER = 'data/logos'
