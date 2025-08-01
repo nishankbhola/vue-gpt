@@ -563,15 +563,17 @@ def get_company_pdfs(company_name):
 def upload_pdf(company_name):
     """Upload PDF to company"""
     try:
+        # Check if the post request has the file part
         if 'pdf' not in request.files:
             return jsonify({'error': 'No PDF file provided'}), 400
         
         pdf_file = request.files['pdf']
         if pdf_file.filename == '':
             return jsonify({'error': 'No file selected'}), 400
-        
-        if not allowed_file(pdf_file.filename):
-            return jsonify({'error': 'Invalid file type'}), 400
+            
+        # Check file size (additional client-side check)
+        if request.content_length and request.content_length > 500 * 1024 * 1024:
+            return jsonify({'error': 'File too large. Maximum size is 500MB.'}), 413
         
         filename = secure_filename(pdf_file.filename)
         save_path = os.path.join(UPLOAD_FOLDER, company_name, filename)
