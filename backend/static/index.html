@@ -433,18 +433,32 @@
         .response-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 0;
+            margin-bottom: 24px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.4s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .response-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 16px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #f1f5f9;
+            padding: 20px 24px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .response-company {
@@ -454,49 +468,160 @@
         }
 
         .response-model {
-            background: #f1f5f9;
-            color: #475569;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .response-body {
+            padding: 24px;
         }
 
         .response-content {
-            color: #374151;
+            color: #1f2937;
+            line-height: 1.8;
+            font-size: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            letter-spacing: 0.01em;
+        }
+
+        .response-content p {
+            margin-bottom: 18px;
+        }
+
+        .response-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .response-content strong {
+            font-weight: 600;
+            color: #111827;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .response-content ul, .response-content ol {
+            margin: 20px 0;
+            padding-left: 28px;
+        }
+
+        .response-content li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .response-content h3 {
+            margin-top: 32px;
             margin-bottom: 16px;
-            line-height: 1.7;
+            color: #111827;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .response-content h4 {
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: #111827;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* Typewriter Animation */
+        .typewriter-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .typewriter-text {
+            opacity: 0;
+            animation: fadeInTypewriter 0.3s ease-in forwards;
+        }
+
+        .typewriter-text.typing {
+            opacity: 1;
+        }
+
+        .typewriter-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: #6366f1;
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes fadeInTypewriter {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Smooth text appearance */
+        .response-content {
+            transition: all 0.3s ease;
         }
 
         .sources-section {
-            border-top: 1px solid #f1f5f9;
-            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+            margin-top: 20px;
         }
 
         .sources-title {
             font-size: 14px;
             font-weight: 600;
             color: #374151;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sources-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: #6366f1;
+            border-radius: 2px;
         }
 
         .source-item {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .source-item:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .source-content {
             font-size: 13px;
             color: #64748b;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
             background: #ffffff;
-            padding: 12px;
-            border-radius: 6px;
+            padding: 16px;
+            border-radius: 8px;
             border: 1px solid #e2e8f0;
+            line-height: 1.5;
         }
 
         /* Loading States */
@@ -1132,23 +1257,26 @@
                                         <div v-if="response.model_used" class="response-model">{{ response.model_used }}</div>
                                     </div>
                                     
-                                    <div v-if="response.success" class="response-content">
-                                        {{ response.answer }}
-                                    </div>
-                                    <div v-else class="alert alert-error">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                        <span>{{ response.error }}</span>
-                                    </div>
-                                    
-                                    <div v-if="response.sources && response.sources.length > 0" class="sources-section">
-                                        <div class="sources-title">Source Documents</div>
-                                        <div v-for="(source, index) in response.sources" :key="index" class="source-item">
-                                            <div class="source-content">{{ source.content }}</div>
-                                            <button class="btn btn-secondary btn-sm" 
-                                                    @click="downloadPdf(response.company, getFileName(source.source))">
-                                                <i class="fas fa-download"></i>
-                                                Download {{ getFileName(source.source) }}
-                                            </button>
+                                    <div class="response-body">
+                                        <div v-if="response.success" class="response-content">
+                                            <div class="typewriter-text" :ref="'typewriter-' + response.company" v-html="formatResponseText(response.answer)"></div>
+                                            <span class="typewriter-cursor" v-if="response.answer"></span>
+                                        </div>
+                                        <div v-else class="alert alert-error">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            <span>{{ response.error }}</span>
+                                        </div>
+                                        
+                                        <div v-if="response.sources && response.sources.length > 0" class="sources-section">
+                                            <div class="sources-title">Source Documents</div>
+                                            <div v-for="(source, index) in response.sources" :key="index" class="source-item">
+                                                <div class="source-content">{{ source.content }}</div>
+                                                <button class="btn btn-secondary btn-sm" 
+                                                        @click="downloadPdf(response.company, getFileName(source.source))">
+                                                    <i class="fas fa-download"></i>
+                                                    Download {{ getFileName(source.source) }}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1220,24 +1348,27 @@
                                         <div v-if="companyResponse.model_used" class="response-model">{{ companyResponse.model_used }}</div>
                                     </div>
                                     
-                                    <div class="mb-4" style="padding: 12px; background: #f8fafc; border-radius: 8px; border-left: 3px solid #6366f1;">
-                                        <div class="font-medium text-gray-700 text-sm">Question:</div>
-                                        <div class="text-gray-900">{{ companyResponse.question }}</div>
-                                    </div>
-                                    
-                                    <div class="response-content">
-                                        {{ companyResponse.answer }}
-                                    </div>
-                                    
-                                    <div v-if="companyResponse.sources && companyResponse.sources.length > 0" class="sources-section">
-                                        <div class="sources-title">Source Documents</div>
-                                        <div v-for="(source, index) in companyResponse.sources" :key="index" class="source-item">
-                                            <div class="source-content">{{ source.content }}</div>
-                                            <button class="btn btn-secondary btn-sm" 
-                                                    @click="downloadPdf(selectedCompany, getFileName(source.source))">
-                                                <i class="fas fa-download"></i>
-                                                Download {{ getFileName(source.source) }}
-                                            </button>
+                                    <div class="response-body">
+                                        <div class="mb-6" style="padding: 20px; background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%); border-radius: 16px; border-left: 4px solid #6366f1; box-shadow: 0 2px 4px rgba(99, 102, 241, 0.1);">
+                                            <div class="font-medium text-gray-600 text-sm mb-3" style="text-transform: uppercase; letter-spacing: 0.05em;">Question:</div>
+                                            <div class="text-gray-900 font-semibold text-lg">{{ companyResponse.question }}</div>
+                                        </div>
+                                        
+                                        <div class="response-content">
+                                            <div class="typewriter-text" ref="companyTypewriter" v-html="formatResponseText(companyResponse.answer)"></div>
+                                            <span class="typewriter-cursor" v-if="companyResponse.answer"></span>
+                                        </div>
+                                        
+                                        <div v-if="companyResponse.sources && companyResponse.sources.length > 0" class="sources-section">
+                                            <div class="sources-title">Source Documents</div>
+                                            <div v-for="(source, index) in companyResponse.sources" :key="index" class="source-item">
+                                                <div class="source-content">{{ source.content }}</div>
+                                                <button class="btn btn-secondary btn-sm" 
+                                                        @click="downloadPdf(selectedCompany, getFileName(source.source))">
+                                                    <i class="fas fa-download"></i>
+                                                    Download {{ getFileName(source.source) }}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1467,6 +1598,50 @@
                 
                 getFileName(fullPath) {
                     return fullPath.split('/').pop().split('\\').pop();
+                },
+                
+                formatResponseText(text) {
+                    if (!text) return '';
+                    
+                    // Convert markdown-style formatting to HTML
+                    let formatted = text
+                        // Bold text (**text**)
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        // Italic text (*text*)
+                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                        // Headers (# Header)
+                        .replace(/^# (.*$)/gm, '<h3 style="font-size: 18px; font-weight: 600; color: #111827; margin: 24px 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #e5e7eb;">$1</h3>')
+                        .replace(/^## (.*$)/gm, '<h4 style="font-size: 16px; font-weight: 600; color: #111827; margin: 20px 0 12px 0;">$1</h4>')
+                        // Lists
+                        .replace(/^\* (.*$)/gm, '<li>$1</li>')
+                        .replace(/^- (.*$)/gm, '<li>$1</li>')
+                        // Convert consecutive list items to proper lists
+                        .replace(/(<li>.*<\/li>)/gs, '<ul style="margin: 16px 0; padding-left: 24px;">$1</ul>')
+                        // Line breaks
+                        .replace(/\n/g, '<br>');
+                    
+                    return formatted;
+                },
+                
+                animateTypewriter(element, text, speed = 30) {
+                    if (!element || !text) return;
+                    
+                    element.innerHTML = '';
+                    element.style.opacity = '1';
+                    
+                    let index = 0;
+                    const typeNextChar = () => {
+                        if (index < text.length) {
+                            element.innerHTML += text[index];
+                            index++;
+                            setTimeout(typeNextChar, speed);
+                        } else {
+                            // Add blinking cursor at the end
+                            element.innerHTML += '<span class="typewriter-cursor"></span>';
+                        }
+                    };
+                    
+                    typeNextChar();
                 },
                 
                 // Server Connection Check
