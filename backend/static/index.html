@@ -123,12 +123,20 @@
             height: 40px;
             border-radius: 10px;
             object-fit: cover;
+            object-position: center;
             background: #f3f4f6;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 16px;
             color: #6b7280;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
         }
 
         .company-info {
@@ -739,12 +747,20 @@
             height: 48px;
             border-radius: 10px;
             object-fit: cover;
+            object-position: center;
             background: #f3f4f6;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
             color: #6b7280;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
         }
 
         .resource-info h3 {
@@ -1252,7 +1268,7 @@
                                         <img v-if="getCompanyLogo(response.company)" 
                                              :src="getCompanyLogo(response.company)" 
                                              :alt="response.company" 
-                                             style="width: 32px; height: 32px; border-radius: 8px;">
+                                             style="width: 32px; height: 32px; border-radius: 8px; object-fit: cover; object-position: center; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0); -webkit-transform: translateZ(0);">
                                         <div v-else style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                             <i class="fas fa-building" style="color: #64748b;"></i>
                                         </div>
@@ -1303,7 +1319,7 @@
                                     <img v-if="getCompanyLogo(selectedCompany)" 
                                          :src="getCompanyLogo(selectedCompany)" 
                                          :alt="selectedCompany" 
-                                         style="width: 48px; height: 48px; border-radius: 12px;">
+                                         style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover; object-position: center; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0); -webkit-transform: translateZ(0);">
                                     <div v-else style="width: 48px; height: 48px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
                                         <i class="fas fa-building" style="color: #64748b; font-size: 20px;"></i>
                                     </div>
@@ -1343,7 +1359,7 @@
                                         <img v-if="getCompanyLogo(selectedCompany)" 
                                              :src="getCompanyLogo(selectedCompany)" 
                                              :alt="selectedCompany" 
-                                             style="width: 32px; height: 32px; border-radius: 8px;">
+                                             style="width: 32px; height: 32px; border-radius: 8px; object-fit: cover; object-position: center; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0); -webkit-transform: translateZ(0);">
                                         <div v-else style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                             <i class="fas fa-building" style="color: #64748b;"></i>
                                         </div>
@@ -1417,7 +1433,8 @@
                                             <img v-if="resource.has_logo" 
                                                  :src="`${apiUrl}/companies/${resource.company}/logo`" 
                                                  :alt="resource.company" 
-                                                 class="company-logo-large">
+                                                 class="company-logo-large"
+                                                 style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0); -webkit-transform: translateZ(0);">
                                             <div v-else class="company-logo-large">
                                                 <i class="fas fa-building"></i>
                                             </div>
